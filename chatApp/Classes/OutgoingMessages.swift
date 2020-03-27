@@ -40,8 +40,8 @@ class OutgoingMessage {
         for memberId in memberIds {
             reference(.Message).document(memberId).collection(chatRoomId).document(messageId).setData(messageDictionary as! [String : Any])
         }
-        //update recent chat
         
+        updateRecents(chatRoomId: chatRoomId, lastMessage: messageDictionary[kMESSAGE] as! String)
         //send push notification
     }
     
