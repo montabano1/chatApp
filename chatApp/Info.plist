@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<string>monTalk</string>
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
@@ -21,17 +21,17 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>chatApp needs to use your media library</string>
+	<string>monTalk needs to use your media library to find media</string>
 	<key>NSCameraUsageDescription</key>
-	<string>chatApp needs to use your camera</string>
+	<string>monTalk needs to use your camera to tkae a picture</string>
 	<key>NSContactsUsageDescription</key>
-	<string>chatApp needs to use your contacts</string>
+	<string>monTalk needs to use your contacts to find contacts</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>chatApp needs to use your location</string>
+	<string>monTalk needs to use your location to share location</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>chatApp needs to use your microphone</string>
+	<string>monTalk needs to use your microphone to transmit audio</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>chatApp needs to use your photo library</string>
+	<string>monTalk needs to use your photo library to find photos</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

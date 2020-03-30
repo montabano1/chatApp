@@ -20,9 +20,13 @@ class ProfileViewTableViewController: UITableViewController {
     
     @IBOutlet weak var callButtonOutlet: UIButton!
     
-    @IBOutlet weak var blockButtonOutlet: UIButton!
+    @IBOutlet weak var blockUserButton: UIButton!
+    
     
     @IBOutlet weak var avatarImageView: UIImageView!
+    
+    @IBOutlet weak var teamNameLabel: UILabel!
+    @IBOutlet weak var orgNameLabel: UILabel!
     
     var user: FUser?
     
@@ -73,11 +77,21 @@ class ProfileViewTableViewController: UITableViewController {
         blockUser(userToBlock: user!)
     }
     
+    @IBAction func reportUserButtonPressed(_ sender: Any) {
+        reference(.Reporteduser).document(user!.objectId).setData(["reporter": FUser.currentId(), "userId": user!.objectId, "reason" : "reason", "date" : dateFormatter().string(from: Date())])
+        
+    }
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 3
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
+            return 3
+        }
+        if section == 2 {
+            return 2
+        }
         return 1
     }
     
@@ -102,6 +116,8 @@ class ProfileViewTableViewController: UITableViewController {
             self.title = "Profile"
             fullNameLabel.text = user!.fullname
             phoneNumberLabel.text = user!.phoneNumber
+            orgNameLabel.text = user!.organization
+            teamNameLabel.text = user!.team
             
             updateBlockStatus()
             
@@ -115,19 +131,19 @@ class ProfileViewTableViewController: UITableViewController {
     
     func updateBlockStatus() {
         if user!.objectId != FUser.currentId() {
-            blockButtonOutlet.isHidden = false
+            blockUserButton.isHidden = false
             messageButtonOutlet.isHidden = false
             callButtonOutlet.isHidden = false
         } else {
-            blockButtonOutlet.isHidden = true
+            blockUserButton.isHidden = true
             messageButtonOutlet.isHidden = true
             callButtonOutlet.isHidden = true
         }
         
         if FUser.currentUser()!.blockedUsers.contains(user!.objectId) {
-            blockButtonOutlet.setTitle("Unblock User", for: .normal)
+            blockUserButton.setTitle("Unblock User", for: .normal)
         } else {
-            blockButtonOutlet.setTitle("Block User", for: .normal)
+            blockUserButton.setTitle("Block User", for: .normal)
         }
     }
 }

@@ -28,7 +28,9 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
     var teamTextField = UITextField()
     var email: String?
     var password: String?
-    
+    var termsLabel = UILabel()
+    var termsSwitch = UISwitch()
+    var termsButton = UIButton()
     var avatarImage: UIImage?
     
     var width: Double = 0
@@ -164,9 +166,36 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
         teamTextField.autocorrectionType = .no
         view.addSubview(teamTextField)
         
+        termsLabel.frame = CGRect(x: Double(choosePictureButton.frame.minX), y: Double(teamLabel.frame.maxY + 30), width: 1, height: 40)
+        termsLabel.text = "I agree to the "
+        termsLabel.font = UIFont.systemFont(ofSize: 20)
+        termsLabel.sizeToFit()
+        view.addSubview(termsLabel)
+        termsButton.frame = CGRect(x: Double(choosePictureButton.frame.minX), y: Double(termsLabel.frame.maxY), width: 1, height: 1)
+        termsButton.setTitle("Terms & Conditions", for: [])
+        termsButton.setTitleColor(#colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1), for: [])
+        termsButton.sizeToFit()
+        termsButton.addTarget(self, action: #selector(goToTerms), for: .touchUpInside)
+        view.addSubview(termsButton)
+        termsSwitch.frame = CGRect(x: Int(width * 0.65), y: Int(termsLabel.frame.minY + 5), width: Int(width * 0.65), height: 50)
+        view.addSubview(termsSwitch)
+        
+        
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.outsideTapped))
         view.addGestureRecognizer(tap)
         
+    }
+    
+    @objc func goToTerms() {
+        let vc1 = self.storyboard!.instantiateViewController(withIdentifier: "terms") as! TCViewController
+        let navController = UINavigationController(rootViewController: vc1) //
+        let backItem = UIBarButtonItem(title: "< Back", style: .plain, target: self, action: #selector(backAction))
+        vc1.navigationItem.leftBarButtonItems = [backItem]
+        self.present(navController, animated:true, completion: nil)
+    }
+    
+    @objc func backAction() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     @objc func outsideTapped() {
@@ -187,9 +216,14 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
             teamTextField.text = ""
         }
         @IBAction func doneButtonPressed(_ sender: Any) {
-    
-            ProgressHUD.show("Registering...")
-    
+            
+            
+            if !termsSwitch.isOn {
+                ProgressHUD.showError("You must agree to terms and conditions")
+                return
+            } else {
+                ProgressHUD.show("Registering...")
+            
             if firstNameTextField.text != "" && lastNameTextField.text != "" && phoneNumberTextField.text != ""  {
                 FUser.registerUserWith(email: email!, password: password!, firstName: firstNameTextField.text!, lastName: lastNameTextField.text!) { (error) in
                     if error != nil {
@@ -203,7 +237,7 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
             } else {
                 ProgressHUD.showError("First name, last name and phone number are required")
             }
-    
+            }
         }
     
         func registerUser() {

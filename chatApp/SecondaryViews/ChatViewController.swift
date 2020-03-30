@@ -258,7 +258,8 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         optionMenu.addAction(shareVideo)
         optionMenu.addAction(shareLocation)
         optionMenu.addAction(cancelAction)
-        if UI_USER_INTERFACE_IDIOM() == .pad {
+        
+        if(UIDevice.current.userInterfaceIdiom == .pad) {
             if let currentPopoverpresentationcontroller = optionMenu.popoverPresentationController {
                 currentPopoverpresentationcontroller.sourceView = self.inputToolbar.contentView.leftBarButtonItem
                 currentPopoverpresentationcontroller.sourceRect = self.inputToolbar.contentView.leftBarButtonItem.bounds

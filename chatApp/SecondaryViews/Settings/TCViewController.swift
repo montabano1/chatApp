@@ -14,7 +14,10 @@ class TCViewController: UIViewController {
         super.viewDidLoad()
 
         self.navigationItem.largeTitleDisplayMode = .never
+        
     }
-   
+   @objc func backAction() {
+       self.dismiss(animated: true, completion: nil)
+   }
 
 }

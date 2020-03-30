@@ -22,9 +22,7 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
     let searchController = UISearchController(searchResultsController: nil)
     var popCounter = 0
     @IBAction func createNewChatButtonPressed(_ sender: Any) {
-        let userVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "usersTableView") as! UsersTableViewController
-        
-        self.navigationController?.pushViewController(userVC, animated: true)
+        selectUserForChat(isGroup: false)
     }
     override func viewWillAppear(_ animated: Bool) {
         sentTexts = []
@@ -256,6 +254,14 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func updateSearchResults(for searchController: UISearchController) {
         filterContentForSearchText(searchText: searchController.searchBar.text!)
+    }
+    
+    func selectUserForChat(isGroup: Bool) {
+        let contactsVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "contactsView") as! ContactsTableViewController
+        
+        contactsVC.isGroup = isGroup
+        
+        self.navigationController?.pushViewController(contactsVC, animated: true)
     }
     
     func updatePushMembers(recent: NSDictionary, mute: Bool) {

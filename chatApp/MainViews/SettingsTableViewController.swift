@@ -93,7 +93,6 @@ class SettingsTableViewController: UITableViewController
         activityViewController.popoverPresentationController?.sourceView = self.view
         activityViewController.setValue("Lets Chat on monTalk", forKey: "subject")
         self.present(activityViewController, animated: true, completion: nil)
-    
     }
     
     @IBAction func deleteAccountButtonPressed(_ sender: Any) {
