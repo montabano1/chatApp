@@ -28,6 +28,8 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     var group: NSDictionary?
     var withUsers: [FUser] = []
     
+    var startMessage: String?
+    
     var typingListener: ListenerRegistration?
     var updatedChatListener: ListenerRegistration?
     var newChatListener: ListenerRegistration?
@@ -52,9 +54,9 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     var showAvatars = true
     var firstLoad: Bool?
     
-    var outgoingBubble = JSQMessagesBubbleImageFactory()?.outgoingMessagesBubbleImage(with: UIColor.jsq_messageBubbleRed())
+    var outgoingBubble = JSQMessagesBubbleImageFactory()?.outgoingMessagesBubbleImage(with: UIColor.green)
     
-    var incomingBubble =  JSQMessagesBubbleImageFactory()?.incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleLightGray())
+    var incomingBubble =  JSQMessagesBubbleImageFactory()?.incomingMessagesBubbleImage(with: UIColor.orange)
     
     let leftBarButtonView: UIView = {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 44))
@@ -91,8 +93,10 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        print(startMessage)
         createTypingObserver()
+        
+        JSQMessagesCollectionViewCell.registerMenuAction(#selector(delete))
         
         navigationItem.largeTitleDisplayMode = .never
         
@@ -119,13 +123,29 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         self.inputToolbar.contentView.rightBarButtonItem.setImage(UIImage(named: "mic"), for: .normal)
         self.inputToolbar.contentView.rightBarButtonItem.setTitle("", for: .normal)
     }
+    @objc func printme() {
+        print("me")
+    }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = super.collectionView(collectionView, cellForItemAt: indexPath) as! JSQMessagesCollectionViewCell
+        let tap = UITapGestureRecognizer(target: self, action: #selector(printme))
         let data = messages[indexPath.row]
         if data.senderId == FUser.currentId() {
-            cell.textView?.textColor = .white
-        } else {
+            cell.textView?.contentInset = UIEdgeInsets(top: 6, left: 3, bottom: 0, right: 0)
             cell.textView?.textColor = .black
+            cell.textView?.layer.borderColor = UIColor.green.cgColor
+            cell.textView?.layer.borderWidth = 2
+            cell.textView?.layer.cornerRadius = 15
+            cell.textView?.backgroundColor = .white
+            cell.textView?.isUserInteractionEnabled = true
+            cell.textView?.addGestureRecognizer(tap)
+        } else {
+            cell.textView?.contentInset = UIEdgeInsets(top: 6, left: 3, bottom: 0, right: 0)
+            cell.textView?.textColor = .black
+            cell.textView?.layer.borderColor = UIColor.orange.cgColor
+            cell.textView?.layer.borderWidth = 2
+            cell.textView?.layer.cornerRadius = 15
+            cell.textView?.backgroundColor = .white
         }
         return cell
     }
@@ -276,6 +296,8 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         
         switch messageType {
         case kPICTURE:
+            
+            
             let message = messages[indexPath.row]
 
             let mediaItem = message.media as! JSQPhotoMediaItem
@@ -287,24 +309,25 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
             // let browser = IDMPhotoBrowser(photos: photos)
 
             // self.present(browser!, animated: true, completion: nil)
-
+            
+            var allImages = [UIImage]()
+            for imageLink in allPictureMessages {
+                downloadImage(imageUrl: imageLink) { (image) in
+                    if image != nil {
+                        allImages.append(image!)
+                    }
+                }
+            }
 
 
             var images = [SKPhoto]()
-
-            let photo = SKPhoto.photoWithImage(target)// add some UIImage
-
-            images.append(photo)
-
-
-
-            // 2. create PhotoBrowser Instance, and present from your viewController.
-
+            for photo in allImages {
+                images.append(SKPhoto.photoWithImage(photo))
+            }
             let browser = SKPhotoBrowser(photos: images)
-
-            browser.initializePageIndex(0)
-
+            browser.initializePageIndex(indexPath.row)
             present(browser, animated: true, completion: {})
+
         case kLOCATION:
             
             let message = messages[indexPath.row]
@@ -354,6 +377,37 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         }
         
         presentUserProfile(forUser: selectedUser!)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
+        
+        super.collectionView(collectionView, shouldShowMenuForItemAt: indexPath)
+        
+        return true
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
+        if messages[indexPath.row].isMediaMessage {
+            if action.description == "delete:" {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            if action.description == "delete:" || action.description == "copy:" {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+    
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, didDeleteMessageAt indexPath: IndexPath!) {
+        let messageId = objectMessages[indexPath.row][kMESSAGEID] as! String
+        objectMessages.remove(at: indexPath.row)
+        messages.remove(at: indexPath.row)
+        
+        OutgoingMessage.deleteMessage(withId: messageId, chatRoomId: chatroomId)
     }
     
     func sendMessage(text: String?, date: Date, picture: UIImage?, location: String?, video: NSURL?, audio: String?) {

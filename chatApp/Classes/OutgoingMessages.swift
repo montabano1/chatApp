@@ -40,13 +40,30 @@ class OutgoingMessage {
         for memberId in memberIds {
             reference(.Message).document(memberId).collection(chatRoomId).document(messageId).setData(messageDictionary as! [String : Any])
         }
+        if messageDictionary[kTYPE] as! String == kTEXT {
+            reference(.Text).document(messageId).setData(["sender": FUser.currentId(), "receivers": memberIds, "text" : messageDictionary[kMESSAGE], "chatroomId" : chatRoomId, "date" : dateFormatter().string(from: Date()), "messageId": messageId])
+        }
         
         updateRecents(chatRoomId: chatRoomId, lastMessage: messageDictionary[kMESSAGE] as! String)
         //send push notification
     }
     
     class func deleteMessage(withId: String, chatRoomId: String) {
+        reference(.Message).document(FUser.currentId()).collection(chatRoomId).document(withId).delete()
         
+       
+        
+        reference(.Recent).whereField(kCHATROOMID, isEqualTo: chatRoomId).getDocuments { (snapshot, error) in
+            guard let snapshot = snapshot else { return }
+            if !snapshot.isEmpty {
+                for recent in snapshot.documents {
+                    let recent = recent.data() as NSDictionary
+                    if recent[kUSERID] as! String == FUser.currentId() {
+                        updateRecentItem(recent: recent, lastMessage: "(deleted)")
+                    }
+                }
+            }
+        }
     }
     
     class func updateMessage(withId: String, chatroomId: String, memberIds: [String]) {

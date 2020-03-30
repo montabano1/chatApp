@@ -12,11 +12,6 @@ import ProgressHUD
 
 class UsersTableViewController: UITableViewController, UISearchResultsUpdating, UserTableViewCellDelegate {
     
-    
-    
-    
-    
-    
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var segmentedController: UISegmentedControl!
     
@@ -40,7 +35,7 @@ class UsersTableViewController: UITableViewController, UISearchResultsUpdating, 
         searchController.dimsBackgroundDuringPresentation = false
         definesPresentationContext = true
         
-        loadUsers(filter: kCITY)
+        loadUsers(filter: kTEAM)
     }
     
     // MARK: - Table view data source
@@ -129,7 +124,18 @@ class UsersTableViewController: UITableViewController, UISearchResultsUpdating, 
             
         }
         
-        startPrivateChat(user1: FUser.currentUser()!, user2: user)
+        if !checkBlockedStatus(withUser: user) {
+            let chatVC = ChatViewController()
+            chatVC.titleName = user.firstname
+            chatVC.membersToPush = [FUser.currentId(), user.objectId]
+            chatVC.memberIds = [FUser.currentId(), user.objectId]
+            chatVC.chatroomId = startPrivateChat(user1: FUser.currentUser()!, user2: user)
+            chatVC.isGroup = false
+            chatVC.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(chatVC, animated: true)
+        } else {
+            ProgressHUD.showError("This user is not available for chat")
+        }
     }
     
     func loadUsers(filter: String) {
@@ -138,10 +144,10 @@ class UsersTableViewController: UITableViewController, UISearchResultsUpdating, 
         var query: Query!
         
         switch filter {
-        case kCITY:
-            query = reference(.User).whereField(kCITY, isEqualTo: FUser.currentUser()!.city).order(by: kFIRSTNAME, descending: false)
-        case kCOUNTRY:
-            query = reference(.User).whereField(kCOUNTRY, isEqualTo: FUser.currentUser()!.country).order(by: kFIRSTNAME, descending: false)
+        case kTEAM:
+            query = reference(.User).whereField(kTEAM, isEqualTo: FUser.currentUser()!.team).order(by: kFIRSTNAME, descending: false)
+        case kORGANIZATION:
+            query = reference(.User).whereField(kORGANIZATION, isEqualTo: FUser.currentUser()!.organization).order(by: kFIRSTNAME, descending: false)
         default:
             query = reference(.User).order(by: kFIRSTNAME, descending: false)
         }
@@ -185,9 +191,9 @@ class UsersTableViewController: UITableViewController, UISearchResultsUpdating, 
         
         switch sender.selectedSegmentIndex {
         case 0:
-            loadUsers(filter: kCITY)
+            loadUsers(filter: kTEAM)
         case 1:
-            loadUsers(filter: kCOUNTRY)
+            loadUsers(filter: kORGANIZATION)
         case 2:
             loadUsers(filter: "")
         default:

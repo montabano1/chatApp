@@ -25,9 +25,8 @@ class FUser {
     var avatar: String
     var isOnline: Bool
     var phoneNumber: String
-    var countryCode: String
-    var country:String
-    var city: String
+    var organization: String
+    var team:String
     
     var contacts: [String]
     var blockedUsers: [String]
@@ -35,7 +34,7 @@ class FUser {
     
     //MARK: Initializers
     
-    init(_objectId: String, _pushId: String?, _createdAt: Date, _updatedAt: Date, _email: String, _firstname: String, _lastname: String, _avatar: String = "", _loginMethod: String, _phoneNumber: String, _city: String, _country: String) {
+    init(_objectId: String, _pushId: String?, _createdAt: Date, _updatedAt: Date, _email: String, _firstname: String, _lastname: String, _avatar: String = "", _loginMethod: String, _phoneNumber: String, _organization: String, _team: String) {
         
         objectId = _objectId
         pushId = _pushId
@@ -49,13 +48,11 @@ class FUser {
         fullname = _firstname + " " + _lastname
         avatar = _avatar
         isOnline = true
-        
-        city = _city
-        country = _country
+        organization = _organization
+        team = _team
         
         loginMethod = _loginMethod
         phoneNumber = _phoneNumber
-        countryCode = ""
         blockedUsers = []
         contacts = []
 
@@ -118,11 +115,6 @@ class FUser {
         } else {
             phoneNumber = ""
         }
-        if let countryC = _dictionary[kCOUNTRYCODE] {
-            countryCode = countryC as! String
-        } else {
-            countryCode = ""
-        }
         if let cont = _dictionary[kCONTACT] {
             contacts = cont as! [String]
         } else {
@@ -139,16 +131,16 @@ class FUser {
         } else {
             loginMethod = ""
         }
-        if let cit = _dictionary[kCITY] {
-            city = cit as! String
+        if let tm = _dictionary[kTEAM] {
+            team = tm as! String
         } else {
-            city = ""
+            team = ""
         }
-        if let count = _dictionary[kCOUNTRY] {
-            country = count as! String
-        } else {
-            country = ""
-        }
+        if let orgg = _dictionary[kORGANIZATION] {
+                   organization = orgg as! String
+               } else {
+                   organization = ""
+               }
         
     }
     
@@ -210,7 +202,7 @@ class FUser {
                 return
             }
             
-            let fUser = FUser(_objectId: firuser!.user.uid, _pushId: "", _createdAt: Date(), _updatedAt: Date(), _email: firuser!.user.email!, _firstname: firstName, _lastname: lastName, _avatar: avatar, _loginMethod: kEMAIL, _phoneNumber: "", _city: "", _country: "")
+            let fUser = FUser(_objectId: firuser!.user.uid, _pushId: "", _createdAt: Date(), _updatedAt: Date(), _email: firuser!.user.email!, _firstname: firstName, _lastname: lastName, _avatar: avatar, _loginMethod: kEMAIL, _phoneNumber: "", _organization: "", _team: "")
             
             
             saveUserLocally(fUser: fUser)
@@ -250,7 +242,7 @@ class FUser {
                 } else {
                     
                     //    we have no user, register
-                    let fUser = FUser(_objectId: firuser!.user.uid, _pushId: "", _createdAt: Date(), _updatedAt: Date(), _email: "", _firstname: "", _lastname: "", _avatar: "", _loginMethod: kPHONE, _phoneNumber: firuser!.user.phoneNumber!, _city: "", _country: "")
+                    let fUser = FUser(_objectId: firuser!.user.uid, _pushId: "", _createdAt: Date(), _updatedAt: Date(), _email: "", _firstname: "", _lastname: "", _avatar: "", _loginMethod: kPHONE, _phoneNumber: firuser!.user.phoneNumber!, _organization: "", _team: "")
 
                     saveUserLocally(fUser: fUser)
                     saveUserToFirestore(fUser: fUser)
@@ -370,9 +362,11 @@ func userDictionaryFrom(user: FUser) -> NSDictionary {
     let createdAt = dateFormatter().string(from: user.createdAt)
     let updatedAt = dateFormatter().string(from: user.updatedAt)
     
-    return NSDictionary(objects: [user.objectId,  createdAt, updatedAt, user.email, user.loginMethod, user.pushId!, user.firstname, user.lastname, user.fullname, user.avatar, user.contacts, user.blockedUsers, user.isOnline, user.phoneNumber, user.countryCode, user.city, user.country], forKeys: [kOBJECTID as NSCopying, kCREATEDAT as NSCopying, kUPDATEDAT as NSCopying, kEMAIL as NSCopying, kLOGINMETHOD as NSCopying, kPUSHID as NSCopying, kFIRSTNAME as NSCopying, kLASTNAME as NSCopying, kFULLNAME as NSCopying, kAVATAR as NSCopying, kCONTACT as NSCopying, kBLOCKEDUSERID as NSCopying, kISONLINE as NSCopying, kPHONE as NSCopying, kCOUNTRYCODE as NSCopying, kCITY as NSCopying, kCOUNTRY as NSCopying])
+    return NSDictionary(objects: [user.objectId,  createdAt, updatedAt, user.email, user.loginMethod, user.pushId!, user.firstname, user.lastname, user.fullname, user.avatar, user.contacts, user.blockedUsers, user.isOnline, user.phoneNumber, user.organization, user.team], forKeys: [kOBJECTID as NSCopying, kCREATEDAT as NSCopying, kUPDATEDAT as NSCopying, kEMAIL as NSCopying, kLOGINMETHOD as NSCopying, kPUSHID as NSCopying, kFIRSTNAME as NSCopying, kLASTNAME as NSCopying, kFULLNAME as NSCopying, kAVATAR as NSCopying, kCONTACT as NSCopying, kBLOCKEDUSERID as NSCopying, kISONLINE as NSCopying, kPHONE as NSCopying,  kORGANIZATION as NSCopying, kTEAM as NSCopying])
     
 }
+
+
 
 func getUsersFromFirestore(withIds: [String], completion: @escaping (_ usersArray: [FUser]) -> Void) {
     
@@ -481,6 +475,9 @@ func updateCurrentUserOneSignalId(newId: String) {
     }
 }
 
+func checkBlockedStatus(withUser: FUser) -> Bool {
+    return withUser.blockedUsers.contains(FUser.currentId())
+}
 
 
 

@@ -1,11 +1,10 @@
 //
 //  HelperFunctions.swift
-//  WChat
+//  chatApp
 //
-//  Created by David Kababyan on 08/03/2018.
-//  Copyright © 2018 David Kababyan. All rights reserved.
+//  Created by michael montalbano on 3/29/20.
+//  Copyright © 2020 michael montalbano. All rights reserved.
 //
-
 
 import Foundation
 import UIKit
@@ -191,4 +190,5 @@ func imageFromInitials(firstName: String?, lastName: String?, withBlock: @escapi
     
     withBlock(img!)
 }
+
 

@@ -40,6 +40,7 @@ class RecentChatTableViewCell: UITableViewCell {
     }
     
     func generateCell(recentChat: NSDictionary, indexPath: IndexPath) {
+        
         self.indexPath = indexPath
         self.nameLabel.text = recentChat[kWITHUSERFULLNAME] as? String
         self.lastMessageLabel.text = recentChat[kLASTMESSAGE] as? String
@@ -77,7 +78,6 @@ class RecentChatTableViewCell: UITableViewCell {
     }
     
     @objc func avatarTap() {
-        print("avatar tap \(indexPath)")
         delegate?.didTapAvatarImage(indexPath: indexPath)
     }
     
