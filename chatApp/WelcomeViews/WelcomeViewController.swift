@@ -125,7 +125,6 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
             } else {
                 ProgressHUD.showError("Email and/or Password is missing")
             }
-            
             loginUser()
         }
         loggingIn = true
@@ -161,7 +160,6 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
         
         FUser.loginUserWith(email: emailTextField.text!, password: passwordTextField.text!) { (error) in
             if error != nil {
-                ProgressHUD.showError(error!.localizedDescription)
                 return
             }
             self.goToApp()
@@ -195,9 +193,11 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
         cleanTextFields()
         dismissKeyboard()
         
+        
+        
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: USER_DID_LOGIN_NOTIFICATION), object: nil, userInfo: [kUSERID : FUser.currentId()])
         
-        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "mainApplication") as! UITabBarController
+        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
         
         self.present(mainView, animated: true, completion: nil)
         

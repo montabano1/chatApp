@@ -28,6 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
             
             Auth.auth().removeStateDidChangeListener(self.authListener!)
             
+            
             if user != nil {
                 if UserDefaults.standard.object(forKey: kCURRENTUSER) != nil {
                     DispatchQueue.main.async {
@@ -118,7 +119,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: USER_DID_LOGIN_NOTIFICATION), object: nil, userInfo: [kUSERID : FUser.currentId()])
         
-        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "mainApplication") as! UITabBarController
+        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
         
         self.window?.rootViewController = mainView
     }

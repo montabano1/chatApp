@@ -17,7 +17,7 @@ class PhotoMediaItem: JSQPhotoMediaItem {
         if (self.image != nil && self.image.size.height > 0 && self.image.size.width > 0) {
             let aspect: CGFloat = self.image.size.width / self.image.size.height
             
-            if self.image.size.width > self.image.size.width {
+            if self.image.size.height < self.image.size.width {
                 thumbSize = CGSize(width: defaultSize, height: defaultSize / aspect)
             } else {
                 thumbSize = CGSize(width: defaultSize * aspect, height: defaultSize)

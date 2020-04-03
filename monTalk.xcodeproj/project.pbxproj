@@ -15,6 +15,13 @@
 		1B6D955E2431833C0092B446 /* TCViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D955D2431833C0092B446 /* TCViewController.swift */; };
 		1B6D956024318B2B0092B446 /* EditProfileTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D955F24318B2B0092B446 /* EditProfileTableViewController.swift */; };
 		1B6D956324319AED0092B446 /* ContactsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D956224319AED0092B446 /* ContactsTableViewController.swift */; };
+		1B6D95852432E8FF0092B446 /* InitialOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95842432E8FF0092B446 /* InitialOptionsViewController.swift */; };
+		1B6D959D24339F330092B446 /* GroupMemberCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D959C24339F330092B446 /* GroupMemberCollectionViewCell.swift */; };
+		1B6D959F2433A0D30092B446 /* NewGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D959E2433A0D30092B446 /* NewGroupViewController.swift */; };
+		1B6D95A32433B60E0092B446 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95A22433B60E0092B446 /* Group.swift */; };
+		1B6D95AD243460BF0092B446 /* GroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95AC243460BF0092B446 /* GroupViewController.swift */; };
+		1B6D95AF24350F970092B446 /* InviteUserTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95AE24350F970092B446 /* InviteUserTableViewController.swift */; };
+		1B6D95B1243794B60092B446 /* ColorPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95B0243794B60092B446 /* ColorPickerViewController.swift */; };
 		1B9FBA55242E585300AA6690 /* PicturesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9FBA54242E585300AA6690 /* PicturesCollectionViewController.swift */; };
 		1B9FBA57242E589E00AA6690 /* PicturesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9FBA56242E589E00AA6690 /* PicturesCollectionViewCell.swift */; };
 		1BB532F0242C3D1F005BB386 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BB532EF242C3D1F005BB386 /* MapViewController.swift */; };
@@ -43,12 +50,12 @@
 		1BD0E2BC24293B0300DD2B5D /* IncomingMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD0E2BB24293B0300DD2B5D /* IncomingMessages.swift */; };
 		1BD0E2C0242BB05F00DD2B5D /* PhotoMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD0E2BF242BB05F00DD2B5D /* PhotoMediaItem.swift */; };
 		1BD0E2C2242BE47200DD2B5D /* VideoMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD0E2C1242BE47200DD2B5D /* VideoMessage.swift */; };
-		B27A2CF382C6B9813ED02424 /* Pods_chatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13DAAFC6CF272FEAEE0DC82E /* Pods_chatApp.framework */; };
+		6C733BDD518671F73FD2146B /* Pods_monTalk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3A69206F692BC72EFEDAD8D /* Pods_monTalk.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0A58D331C4F7DAC6B0247CF8 /* Pods-chatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-chatApp.debug.xcconfig"; path = "Target Support Files/Pods-chatApp/Pods-chatApp.debug.xcconfig"; sourceTree = "<group>"; };
-		13DAAFC6CF272FEAEE0DC82E /* Pods_chatApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_chatApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0CBAB53BEFE05BA72137FEA0 /* Pods-monTalk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-monTalk.release.xcconfig"; path = "Target Support Files/Pods-monTalk/Pods-monTalk.release.xcconfig"; sourceTree = "<group>"; };
 		1B63D462242EEEE100FCD39E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1B6D95572430EBCB0092B446 /* HelperFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperFunctions.swift; sourceTree = "<group>"; };
 		1B6D9559243135DF0092B446 /* AlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertService.swift; sourceTree = "<group>"; };
@@ -56,10 +63,17 @@
 		1B6D955D2431833C0092B446 /* TCViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCViewController.swift; sourceTree = "<group>"; };
 		1B6D955F24318B2B0092B446 /* EditProfileTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileTableViewController.swift; sourceTree = "<group>"; };
 		1B6D956224319AED0092B446 /* ContactsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsTableViewController.swift; sourceTree = "<group>"; };
+		1B6D95842432E8FF0092B446 /* InitialOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialOptionsViewController.swift; sourceTree = "<group>"; };
+		1B6D959C24339F330092B446 /* GroupMemberCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMemberCollectionViewCell.swift; sourceTree = "<group>"; };
+		1B6D959E2433A0D30092B446 /* NewGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupViewController.swift; sourceTree = "<group>"; };
+		1B6D95A22433B60E0092B446 /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
+		1B6D95AC243460BF0092B446 /* GroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewController.swift; sourceTree = "<group>"; };
+		1B6D95AE24350F970092B446 /* InviteUserTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteUserTableViewController.swift; sourceTree = "<group>"; };
+		1B6D95B0243794B60092B446 /* ColorPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerViewController.swift; sourceTree = "<group>"; };
 		1B9FBA54242E585300AA6690 /* PicturesCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicturesCollectionViewController.swift; sourceTree = "<group>"; };
 		1B9FBA56242E589E00AA6690 /* PicturesCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicturesCollectionViewCell.swift; sourceTree = "<group>"; };
 		1BB532EF242C3D1F005BB386 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
-		1BD0E2412423DB6000DD2B5D /* chatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = chatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BD0E2412423DB6000DD2B5D /* monTalk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = monTalk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BD0E2442423DB6000DD2B5D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1BD0E2462423DB6000DD2B5D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		1BD0E24B2423DB6000DD2B5D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -88,6 +102,8 @@
 		1BD0E2BF242BB05F00DD2B5D /* PhotoMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMediaItem.swift; sourceTree = "<group>"; };
 		1BD0E2C1242BE47200DD2B5D /* VideoMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMessage.swift; sourceTree = "<group>"; };
 		1C4B4BFBFDBA740F9AA0E0DC /* Pods-chatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-chatApp.release.xcconfig"; path = "Target Support Files/Pods-chatApp/Pods-chatApp.release.xcconfig"; sourceTree = "<group>"; };
+		28D5A97CB676E9A129576B00 /* Pods-monTalk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-monTalk.debug.xcconfig"; path = "Target Support Files/Pods-monTalk/Pods-monTalk.debug.xcconfig"; sourceTree = "<group>"; };
+		C3A69206F692BC72EFEDAD8D /* Pods_monTalk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_monTalk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,7 +111,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B27A2CF382C6B9813ED02424 /* Pods_chatApp.framework in Frameworks */,
+				6C733BDD518671F73FD2146B /* Pods_monTalk.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,7 +141,7 @@
 		1BD0E2422423DB6000DD2B5D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1BD0E2412423DB6000DD2B5D /* chatApp.app */,
+				1BD0E2412423DB6000DD2B5D /* monTalk.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -169,6 +185,7 @@
 			children = (
 				1BD0E27B2423F2FE00DD2B5D /* FUser.swift */,
 				1BD0E2B92429315100DD2B5D /* OutgoingMessages.swift */,
+				1B6D95A22433B60E0092B446 /* Group.swift */,
 				1B6D9559243135DF0092B446 /* AlertService.swift */,
 				1BD0E2BB24293B0300DD2B5D /* IncomingMessages.swift */,
 				1BD0E2BF242BB05F00DD2B5D /* PhotoMediaItem.swift */,
@@ -183,6 +200,7 @@
 			children = (
 				1BD0E283242425B600DD2B5D /* UserTableViewCell.swift */,
 				1B9FBA56242E589E00AA6690 /* PicturesCollectionViewCell.swift */,
+				1B6D959C24339F330092B446 /* GroupMemberCollectionViewCell.swift */,
 				1BD0E2B32428E64700DD2B5D /* RecentChatTableViewCell.swift */,
 			);
 			path = CustomCells;
@@ -193,6 +211,7 @@
 			children = (
 				1BD0E25A2423DE7F00DD2B5D /* WelcomeViewController.swift */,
 				1BD0E2782423F2D200DD2B5D /* FinishRegistrationViewController.swift */,
+				1B6D95842432E8FF0092B446 /* InitialOptionsViewController.swift */,
 			);
 			path = WelcomeViews;
 			sourceTree = "<group>";
@@ -214,7 +233,11 @@
 				1BB532EF242C3D1F005BB386 /* MapViewController.swift */,
 				1B9FBA54242E585300AA6690 /* PicturesCollectionViewController.swift */,
 				1B6D956224319AED0092B446 /* ContactsTableViewController.swift */,
+				1B6D959E2433A0D30092B446 /* NewGroupViewController.swift */,
+				1B6D95AC243460BF0092B446 /* GroupViewController.swift */,
+				1B6D95AE24350F970092B446 /* InviteUserTableViewController.swift */,
 				1BD0E2B524290B3000DD2B5D /* ChatViewController.swift */,
+				1B6D95B0243794B60092B446 /* ColorPickerViewController.swift */,
 				1B6D956124319ACB0092B446 /* Settings */,
 			);
 			path = SecondaryViews;
@@ -223,7 +246,7 @@
 		27496C03A51F44CE57405B80 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				13DAAFC6CF272FEAEE0DC82E /* Pods_chatApp.framework */,
+				C3A69206F692BC72EFEDAD8D /* Pods_monTalk.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -233,6 +256,8 @@
 			children = (
 				0A58D331C4F7DAC6B0247CF8 /* Pods-chatApp.debug.xcconfig */,
 				1C4B4BFBFDBA740F9AA0E0DC /* Pods-chatApp.release.xcconfig */,
+				28D5A97CB676E9A129576B00 /* Pods-monTalk.debug.xcconfig */,
+				0CBAB53BEFE05BA72137FEA0 /* Pods-monTalk.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -240,9 +265,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1BD0E2402423DB6000DD2B5D /* chatApp */ = {
+		1BD0E2402423DB6000DD2B5D /* monTalk */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1BD0E2552423DB6100DD2B5D /* Build configuration list for PBXNativeTarget "chatApp" */;
+			buildConfigurationList = 1BD0E2552423DB6100DD2B5D /* Build configuration list for PBXNativeTarget "monTalk" */;
 			buildPhases = (
 				678B559EE68E205FC0AAB8F4 /* [CP] Check Pods Manifest.lock */,
 				1BD0E23D2423DB6000DD2B5D /* Sources */,
@@ -254,9 +279,9 @@
 			);
 			dependencies = (
 			);
-			name = chatApp;
+			name = monTalk;
 			productName = chatApp;
-			productReference = 1BD0E2412423DB6000DD2B5D /* chatApp.app */;
+			productReference = 1BD0E2412423DB6000DD2B5D /* monTalk.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -274,7 +299,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 1BD0E23C2423DB6000DD2B5D /* Build configuration list for PBXProject "chatApp" */;
+			buildConfigurationList = 1BD0E23C2423DB6000DD2B5D /* Build configuration list for PBXProject "monTalk" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -287,7 +312,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1BD0E2402423DB6000DD2B5D /* chatApp */,
+				1BD0E2402423DB6000DD2B5D /* monTalk */,
 			);
 		};
 /* End PBXProject section */
@@ -322,7 +347,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-chatApp-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-monTalk-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -335,15 +360,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-chatApp/Pods-chatApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-monTalk/Pods-monTalk-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-chatApp/Pods-chatApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-monTalk/Pods-monTalk-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-chatApp/Pods-chatApp-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-monTalk/Pods-monTalk-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -354,7 +379,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1BD0E2C0242BB05F00DD2B5D /* PhotoMediaItem.swift in Sources */,
+				1B6D95852432E8FF0092B446 /* InitialOptionsViewController.swift in Sources */,
 				1BD0E2C2242BE47200DD2B5D /* VideoMessage.swift in Sources */,
+				1B6D95AF24350F970092B446 /* InviteUserTableViewController.swift in Sources */,
 				1B6D955A243135DF0092B446 /* AlertService.swift in Sources */,
 				1BD0E29E24246E3A00DD2B5D /* CountryCode.swift in Sources */,
 				1B6D9556242F9BA00092B446 /* FUser.swift in Sources */,
@@ -367,16 +394,21 @@
 				1BD0E2B42428E64700DD2B5D /* RecentChatTableViewCell.swift in Sources */,
 				1B6D956024318B2B0092B446 /* EditProfileTableViewController.swift in Sources */,
 				1BD0E29124246DD600DD2B5D /* FCollectionReference.swift in Sources */,
+				1B6D959F2433A0D30092B446 /* NewGroupViewController.swift in Sources */,
 				1BD0E25B2423DE7F00DD2B5D /* WelcomeViewController.swift in Sources */,
 				1BD0E2A124246E3A00DD2B5D /* Constants.swift in Sources */,
 				1BD0E28D2424613600DD2B5D /* ProfileViewTableViewController.swift in Sources */,
+				1B6D959D24339F330092B446 /* GroupMemberCollectionViewCell.swift in Sources */,
 				1B6D955E2431833C0092B446 /* TCViewController.swift in Sources */,
 				1BD0E29C24246E3A00DD2B5D /* Camera.swift in Sources */,
 				1BD0E2892424287200DD2B5D /* UsersTableViewController.swift in Sources */,
+				1B6D95AD243460BF0092B446 /* GroupViewController.swift in Sources */,
 				1BD0E2452423DB6000DD2B5D /* AppDelegate.swift in Sources */,
+				1B6D95B1243794B60092B446 /* ColorPickerViewController.swift in Sources */,
 				1BD0E284242425B600DD2B5D /* UserTableViewCell.swift in Sources */,
 				1BD0E2472423DB6000DD2B5D /* SceneDelegate.swift in Sources */,
 				1BD0E28224241D3500DD2B5D /* SettingsTableViewController.swift in Sources */,
+				1B6D95A32433B60E0092B446 /* Group.swift in Sources */,
 				1B6D955C243177390092B446 /* BlockedUsersViewController.swift in Sources */,
 				1BD0E28B2424342C00DD2B5D /* ChatsViewController.swift in Sources */,
 				1B9FBA55242E585300AA6690 /* PicturesCollectionViewController.swift in Sources */,
@@ -526,18 +558,19 @@
 		};
 		1BD0E2562423DB6100DD2B5D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0A58D331C4F7DAC6B0247CF8 /* Pods-chatApp.debug.xcconfig */;
+			baseConfigurationReference = 28D5A97CB676E9A129576B00 /* Pods-monTalk.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = P4SSA897CK;
 				INFOPLIST_FILE = chatApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.02;
 				PRODUCT_BUNDLE_IDENTIFIER = michaelmontalbano.chatApp2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = monTalk3AppStore;
@@ -548,18 +581,19 @@
 		};
 		1BD0E2572423DB6100DD2B5D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1C4B4BFBFDBA740F9AA0E0DC /* Pods-chatApp.release.xcconfig */;
+			baseConfigurationReference = 0CBAB53BEFE05BA72137FEA0 /* Pods-monTalk.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = P4SSA897CK;
 				INFOPLIST_FILE = chatApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.02;
 				PRODUCT_BUNDLE_IDENTIFIER = michaelmontalbano.chatApp2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = monTalk3AppStore;
@@ -571,7 +605,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1BD0E23C2423DB6000DD2B5D /* Build configuration list for PBXProject "chatApp" */ = {
+		1BD0E23C2423DB6000DD2B5D /* Build configuration list for PBXProject "monTalk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1BD0E2532423DB6100DD2B5D /* Debug */,
@@ -580,7 +614,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1BD0E2552423DB6100DD2B5D /* Build configuration list for PBXNativeTarget "chatApp" */ = {
+		1BD0E2552423DB6100DD2B5D /* Build configuration list for PBXNativeTarget "monTalk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1BD0E2562423DB6100DD2B5D /* Debug */,

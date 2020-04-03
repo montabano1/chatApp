@@ -293,7 +293,7 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
     
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: USER_DID_LOGIN_NOTIFICATION), object: nil, userInfo: [kUSERID : FUser.currentId()])
     
-            let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "mainApplication") as! UITabBarController
+            let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
     
             self.present(mainView, animated: true, completion: nil)
         }

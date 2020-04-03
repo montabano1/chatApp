@@ -68,6 +68,12 @@ class SettingsTableViewController: UITableViewController
         }
         return 30
     }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 {
+            let editVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "editVC") as! EditProfileTableViewController
+                self.navigationController?.pushViewController(editVC, animated: true)
+        }
+    }
     
     @IBAction func cleanCacheButtonPressed(_ sender: Any) {
         do {
@@ -106,7 +112,7 @@ class SettingsTableViewController: UITableViewController
         
         optionMenu.addAction(deleteAction)
         optionMenu.addAction(cancelAction)
-        if UI_USER_INTERFACE_IDIOM() == .pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             if let currentPopoverpresentationcontroller = optionMenu.popoverPresentationController {
                 currentPopoverpresentationcontroller.sourceView = deleteButtonOutlet
                 currentPopoverpresentationcontroller.sourceRect = deleteButtonOutlet.bounds
@@ -129,9 +135,6 @@ class SettingsTableViewController: UITableViewController
             
         }
     }
-    @IBAction func termsAndConditionsButton(_ sender: Any) {
-        
-    }
     
     func showLoginView() {
         
@@ -141,6 +144,7 @@ class SettingsTableViewController: UITableViewController
     }
     
     func setupUI() {
+        
         let currentUser = FUser.currentUser()!
         
         fullNameLabel.text = currentUser.fullname
@@ -191,3 +195,4 @@ class SettingsTableViewController: UITableViewController
     }
     
 }
+

@@ -257,15 +257,15 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func selectUserForChat(isGroup: Bool) {
-//        let contactsVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "contactsView") as! ContactsTableViewController
-//
-//        contactsVC.isGroup = isGroup
-//
-//        self.navigationController?.pushViewController(contactsVC, animated: true)
+        let contactsVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "contactsView") as! ContactsTableViewController
+
+        contactsVC.isGroup = isGroup
+
+        self.navigationController?.pushViewController(contactsVC, animated: true)
         
-        let userVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "usersTableView") as! UsersTableViewController
-        
-        self.navigationController?.pushViewController(userVC, animated: true)
+//        let userVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "usersTableView") as! UsersTableViewController
+//
+//        self.navigationController?.pushViewController(userVC, animated: true)
     }
     
     func updatePushMembers(recent: NSDictionary, mute: Bool) {

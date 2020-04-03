@@ -29,6 +29,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     var withUsers: [FUser] = []
     
     var startMessage: String?
+    var timeStampDate: Date?
     
     var typingListener: ListenerRegistration?
     var updatedChatListener: ListenerRegistration?
@@ -53,6 +54,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     var avatarImageDictionary: NSMutableDictionary?
     var showAvatars = true
     var firstLoad: Bool?
+    var tagNum = 1
     
     var outgoingBubble = JSQMessagesBubbleImageFactory()?.outgoingMessagesBubbleImage(with: UIColor.green)
     
@@ -93,7 +95,6 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(startMessage)
         createTypingObserver()
         
         JSQMessagesCollectionViewCell.registerMenuAction(#selector(delete))
@@ -101,6 +102,10 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         navigationItem.largeTitleDisplayMode = .never
         
         self.navigationItem.leftBarButtonItems = [UIBarButtonItem(image: UIImage(named: "Back"), style: .plain, target: self, action: #selector(self.backAction))]
+        
+        if isGroup! {
+            getCurrentGroup(withId: chatroomId)
+        }
         
         collectionView.collectionViewLayout.incomingAvatarViewSize = CGSize.zero
         collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSize.zero
@@ -122,14 +127,45 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         
         self.inputToolbar.contentView.rightBarButtonItem.setImage(UIImage(named: "mic"), for: .normal)
         self.inputToolbar.contentView.rightBarButtonItem.setTitle("", for: .normal)
+        
     }
-    @objc func printme() {
-        print("me")
+    
+    @objc func printme(_ sender: UITapGestureRecognizer) {
+        let frame = sender.view?.superview?.frame
+        let tag = sender.view!.tag - 1
+        let messageDate = Date() //messages[tag].date
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: messageDate)
+        let minutes = calendar.component(.minute, from: messageDate)
+        let timeLabel = UILabel(frame: frame!)
+        sender.view?.superview?.superview?.addSubview(timeLabel)
+        //timeLabel.text = " \(hour):\(minutes) "
+        timeLabel.text = String(tag)
+        timeLabel.layer.cornerRadius = 10
+        timeLabel.sizeToFit()
+        timeLabel.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        timeLabel.textColor = .white
+        
+        if frame!.minX > 32 {
+            
+            timeLabel.center.x -= (timeLabel.frame.width + 10)
+            timeLabel.center.y = sender.view?.superview?.center.y as! CGFloat
+            
+        } else if frame!.minX == 32 {
+            timeLabel.center.x += (frame!.width + 10)
+            timeLabel.center.y = sender.view?.superview?.center.y as! CGFloat
+        }
+        UIView.animate(withDuration: 1) {
+            timeLabel.alpha = 0
+        }
     }
+    
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = super.collectionView(collectionView, cellForItemAt: indexPath) as! JSQMessagesCollectionViewCell
         let tap = UITapGestureRecognizer(target: self, action: #selector(printme))
         let data = messages[indexPath.row]
+        
+        
         if data.senderId == FUser.currentId() {
             cell.textView?.contentInset = UIEdgeInsets(top: 6, left: 3, bottom: 0, right: 0)
             cell.textView?.textColor = .black
@@ -137,8 +173,8 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
             cell.textView?.layer.borderWidth = 2
             cell.textView?.layer.cornerRadius = 15
             cell.textView?.backgroundColor = .white
-            cell.textView?.isUserInteractionEnabled = true
-            cell.textView?.addGestureRecognizer(tap)
+            
+            
         } else {
             cell.textView?.contentInset = UIEdgeInsets(top: 6, left: 3, bottom: 0, right: 0)
             cell.textView?.textColor = .black
@@ -146,7 +182,16 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
             cell.textView?.layer.borderWidth = 2
             cell.textView?.layer.cornerRadius = 15
             cell.textView?.backgroundColor = .white
+            
         }
+        if tagNum <= messages.count {
+            cell.textView?.tag = tagNum
+            tagNum += 1
+            cell.textView?.isUserInteractionEnabled = true
+            //cell.textView?.addGestureRecognizer(tap)
+        }
+        
+        
         return cell
     }
     
@@ -154,29 +199,69 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         return messages[indexPath.row]
     }
     
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAt indexPath: IndexPath!) -> NSAttributedString! {
+        let message = objectMessages[indexPath.row]
+        
+        if ((message[kSENDERID] as! String) != FUser.currentId()) && (isGroup == true) {
+            if indexPath.row == 0 || shouldShowTimestamp(indexPath: indexPath){
+                return NSAttributedString(string: message[kSENDERNAME] as! String)
+            } else {
+                let lastMessage = objectMessages[indexPath.row - 1]
+                if lastMessage[kSENDERID] as! String !=  message[kSENDERID] as! String {
+                    return NSAttributedString(string: message[kSENDERNAME] as! String)
+                }
+            }
+        }
+        return nil
+    }
+    
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAt indexPath: IndexPath!) -> CGFloat {
+        let message = objectMessages[indexPath.row]
+        if ((message[kSENDERID] as! String) != FUser.currentId()) && isGroup == true  {
+            return 15.0
+        }
+        return 0.0
+    }
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
     }
+    
     
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAt indexPath: IndexPath!) -> JSQMessageBubbleImageDataSource! {
         let data = messages[indexPath.row]
         if data.senderId == FUser.currentId() {
             return outgoingBubble
         } else {
-            return incomingBubble
+            var color = UIColor.init(red: 0.7, green: 0.3, blue: 0.4, alpha: 1)
+            return JSQMessagesBubbleImageFactory()?.incomingMessagesBubbleImage(with: color)
         }
     }
     
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAt indexPath: IndexPath!) -> NSAttributedString! {
-        if indexPath.item % 3 == 0 {
-            let message = messages[indexPath.row]
+        let message = messages[indexPath.row]
+        if shouldShowTimestamp(indexPath: indexPath) == true {
             return JSQMessagesTimestampFormatter.shared()?.attributedTimestamp(for: message.date)
         }
         return nil
     }
     
+    func shouldShowTimestamp(indexPath: IndexPath) -> Bool {
+        let message = messages[indexPath.row]
+        let currentMessageDate = message.date
+        if indexPath.item == 0 {
+            return true
+        } else {
+            let previousMessageDate = messages[indexPath.row - 1].date
+            if currentMessageDate! > previousMessageDate! + 600 {
+                return true
+            }
+        }
+        return false
+    }
+    
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellTopLabelAt indexPath: IndexPath!) -> CGFloat {
-        if indexPath.item % 3 == 0 {
+        let message = messages[indexPath.row]
+        if shouldShowTimestamp(indexPath: indexPath) == true {
             return kJSQMessagesCollectionViewCellLabelHeightDefault
         }
         return 0.0
@@ -296,21 +381,13 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         let messageType = messageDictionary[kTYPE] as! String
         
         switch messageType {
-        case kPICTURE:
-            
-            
+        case kTEXT:
             let message = messages[indexPath.row]
-
+            print(message)
+        case kPICTURE:
+            let message = messages[indexPath.row]
             let mediaItem = message.media as! JSQPhotoMediaItem
-
             let target = mediaItem.image as! UIImage
-
-            // let photos = IDMPhoto.photos(withImages: [mediaItem.image])
-
-            // let browser = IDMPhotoBrowser(photos: photos)
-
-            // self.present(browser!, animated: true, completion: nil)
-            
             var allImages = [UIImage]()
             for imageLink in allPictureMessages {
                 downloadImage(imageUrl: imageLink) { (image) in
@@ -368,16 +445,18 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         var selectedUser: FUser?
         
         if senderId == FUser.currentId() {
-            selectedUser = FUser.currentUser()
+            let editVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "editVC") as! EditProfileTableViewController
+            self.navigationController?.pushViewController(editVC, animated: true)
         } else {
             for user in withUsers {
                 if user.objectId == senderId {
                     selectedUser = user
                 }
             }
+            presentUserProfile(forUser: selectedUser!)
         }
         
-        presentUserProfile(forUser: selectedUser!)
+        
     }
     
     override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
@@ -519,7 +598,6 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
             self.getPictureMessages()
             self.getOldMessagesInBackground()
             self.listenForNewChats()
-            
         }
     }
     
@@ -659,7 +737,9 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     }
     
     @objc func showGroup() {
-        
+        let groupVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "groupView") as! GroupViewController
+        groupVC.group = group!
+        self.navigationController?.pushViewController(groupVC, animated: true)
     }
     
     @objc func showProfile() {
@@ -781,6 +861,17 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
             subtitleLabel.text = "Offline"
         }
         avatarButton.addTarget(self, action: #selector(self.showProfile), for: .touchUpInside)
+    }
+    
+    func setUIForGroupChat() {
+        imageFromData(pictureData: (group![kAVATAR] as! String)) { (image) in
+            if image != nil {
+                avatarButton.setImage(image!.circleMasked, for: [])
+            }
+        }
+        
+        titleLabel.text = titleName
+        subtitleLabel.text = ""
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -906,6 +997,16 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         }
         if updatedChatListener != nil {
             updatedChatListener?.remove()
+        }
+    }
+    
+    func getCurrentGroup(withId: String) {
+        reference(.Group).document(withId).getDocument { (snapshot, error) in
+            guard let snapshot = snapshot else { return }
+            if snapshot.exists {
+                self.group = snapshot.data() as! NSDictionary
+                self.setUIForGroupChat()
+            }
         }
     }
     
