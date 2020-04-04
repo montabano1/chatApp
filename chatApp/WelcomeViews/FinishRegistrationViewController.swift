@@ -136,37 +136,9 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
         phoneNumberTextField.keyboardType = .numberPad
         view.addSubview(phoneNumberTextField)
         
-        organizationLabel.frame = CGRect(x: Double(choosePictureButton.frame.minX), y: Double(phoneLabel.frame.maxY + 30), width: width/4, height: 40)
-        organizationLabel.text = "Organization:"
-        organizationLabel.font = UIFont.systemFont(ofSize: 20)
-        organizationLabel.sizeToFit()
-        view.addSubview(organizationLabel)
-        organizationTextField.frame = CGRect(x: Double(avatarImageView.frame.maxX) + 40, y: 0, width: Double(width / 2), height: 40)
-        organizationTextField.center.y = organizationLabel.center.y
-        organizationTextField.layer.borderWidth = 1
-        organizationTextField.placeholder = "Not Required"
-        organizationTextField.layer.cornerRadius = 5
-        organizationTextField.setLeftPaddingPoints(10)
-        organizationTextField.keyboardType = .namePhonePad
-        organizationTextField.autocorrectionType = .no
-        view.addSubview(organizationTextField)
         
-        teamLabel.frame = CGRect(x: Double(choosePictureButton.frame.minX), y: Double(organizationLabel.frame.maxY + 30), width: width/4, height: 40)
-        teamLabel.text = "Team:"
-        teamLabel.font = UIFont.systemFont(ofSize: 20)
-        teamLabel.sizeToFit()
-        view.addSubview(teamLabel)
-        teamTextField.frame = CGRect(x: Double(avatarImageView.frame.maxX) + 40, y: 0, width: Double(width / 2), height: 40)
-        teamTextField.center.y = teamLabel.center.y
-        teamTextField.layer.borderWidth = 1
-        teamTextField.placeholder = "Not Required"
-        teamTextField.layer.cornerRadius = 5
-        teamTextField.setLeftPaddingPoints(10)
-        teamTextField.keyboardType = .namePhonePad
-        teamTextField.autocorrectionType = .no
-        view.addSubview(teamTextField)
         
-        termsLabel.frame = CGRect(x: Double(choosePictureButton.frame.minX), y: Double(teamLabel.frame.maxY + 30), width: 1, height: 40)
+        termsLabel.frame = CGRect(x: Double(choosePictureButton.frame.minX), y: Double(phoneLabel.frame.maxY + 30), width: 1, height: 40)
         termsLabel.text = "I agree to the "
         termsLabel.font = UIFont.systemFont(ofSize: 20)
         termsLabel.sizeToFit()
@@ -203,26 +175,26 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
         self.view.endEditing(true)
     }
     
-        @objc func cancelButtonPressed() {
-            cleanTextFields()
-            self.dismiss(animated: true, completion: nil)
-        }
+    @objc func cancelButtonPressed() {
+        cleanTextFields()
+        self.dismiss(animated: true, completion: nil)
+    }
     
-        func cleanTextFields() {
-            firstNameTextField.text = ""
-            lastNameTextField.text = ""
-            phoneNumberTextField.text = ""
-            organizationTextField.text = ""
-            teamTextField.text = ""
-        }
-        @IBAction func doneButtonPressed(_ sender: Any) {
-            
-            
-            if !termsSwitch.isOn {
-                ProgressHUD.showError("You must agree to terms and conditions")
-                return
-            } else {
-                ProgressHUD.show("Registering...")
+    func cleanTextFields() {
+        firstNameTextField.text = ""
+        lastNameTextField.text = ""
+        phoneNumberTextField.text = ""
+        organizationTextField.text = ""
+        teamTextField.text = ""
+    }
+    @IBAction func doneButtonPressed(_ sender: Any) {
+        
+        
+        if !termsSwitch.isOn {
+            ProgressHUD.showError("You must agree to terms and conditions")
+            return
+        } else {
+            ProgressHUD.show("Registering...")
             
             if firstNameTextField.text != "" && lastNameTextField.text != "" && phoneNumberTextField.text != ""  {
                 FUser.registerUserWith(email: email!, password: password!, firstName: firstNameTextField.text!, lastName: lastNameTextField.text!) { (error) in
@@ -231,76 +203,77 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
                         ProgressHUD.showError(error?.localizedDescription)
                         return
                     }
-    
+                    
                     self.registerUser()
                 }
             } else {
                 ProgressHUD.showError("First name, last name and phone number are required")
             }
-            }
         }
+    }
     
-        func registerUser() {
-            let fullname = firstNameTextField.text! + " " + lastNameTextField.text!
-    
-            var tempDictionary : Dictionary = [kFIRSTNAME : firstNameTextField.text!,
-                                               kLASTNAME : lastNameTextField.text!,
-                                               kFULLNAME : fullname,
-                                               kORGANIZATION : organizationTextField.text!,
-                                               kTEAM  : teamTextField.text!,
-                                               kPHONE : phoneNumberTextField.text!] as [String:Any]
-    
-            if avatarImage == nil {
-                imageFromInitials(firstName: firstNameTextField.text!, lastName: lastNameTextField.text!) { (avatarInitials) in
-    
-                    let avatarIMG = avatarInitials.jpegData(compressionQuality: 0.7)
-                    let avatar = avatarIMG?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
-    
-                    tempDictionary[kAVATAR] = avatar
-    
-                    self.finishRegistration(withValues: tempDictionary)
-                }
-            } else {
-    
-                let avatarData = avatarImage?.jpegData(compressionQuality: 0.7)
-                let avatar = avatarData?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
-    
+    func registerUser() {
+        let fullname = firstNameTextField.text! + " " + lastNameTextField.text!
+        
+        var tempDictionary : Dictionary = [kFIRSTNAME : firstNameTextField.text!,
+                                           kLASTNAME : lastNameTextField.text!,
+                                           kFULLNAME : fullname,
+                                           kORGANIZATION : organizationTextField.text!,
+                                           kTEAM  : teamTextField.text!,
+                                           kPHONE : phoneNumberTextField.text!] as [String:Any]
+        
+        if avatarImage == nil {
+            imageFromInitials(firstName: firstNameTextField.text!, lastName: lastNameTextField.text!) { (avatarInitials) in
+                
+                let avatarIMG = avatarInitials.jpegData(compressionQuality: 0.7)
+                let avatar = avatarIMG?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
+                
                 tempDictionary[kAVATAR] = avatar
-    
+                
                 self.finishRegistration(withValues: tempDictionary)
-    
             }
+        } else {
+            
+            let avatarData = avatarImage?.jpegData(compressionQuality: 0.7)
+            let avatar = avatarData?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
+            
+            tempDictionary[kAVATAR] = avatar
+            
+            self.finishRegistration(withValues: tempDictionary)
+            
         }
+    }
     
-        func finishRegistration(withValues: [String:Any]) {
-            updateCurrentUserInFirestore(withValues: withValues) { (error) in
-                if error != nil {
-                    DispatchQueue.main.async {
-                        ProgressHUD.showError(error!.localizedDescription)
-                    }
-                    print(error!.localizedDescription)
-                    return
+    func finishRegistration(withValues: [String:Any]) {
+        updateCurrentUserInFirestore(withValues: withValues) { (error) in
+            if error != nil {
+                DispatchQueue.main.async {
+                    ProgressHUD.showError(error!.localizedDescription)
                 }
-    
-                ProgressHUD.dismiss()
-                self.goToApp()
+                print(error!.localizedDescription)
+                return
             }
+            
+            ProgressHUD.dismiss()
+            self.joinOrg()
+            //self.goToApp()
         }
+    }
     
-        func goToApp() {
-            cleanTextFields()
-            dismissKeyboard()
+    func goToApp() {
+        cleanTextFields()
+        dismissKeyboard()
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: USER_DID_LOGIN_NOTIFICATION), object: nil, userInfo: [kUSERID : FUser.currentId()])
+        
+        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
+        
+        self.present(mainView, animated: true, completion: nil)
+    }
     
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: USER_DID_LOGIN_NOTIFICATION), object: nil, userInfo: [kUSERID : FUser.currentId()])
-    
-            let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
-    
-            self.present(mainView, animated: true, completion: nil)
-        }
-    
-        func dismissKeyboard() {
-            self.view.endEditing(false)
-        }
+    func dismissKeyboard() {
+        self.view.endEditing(false)
+    }
     
     
     
@@ -337,5 +310,9 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
     @objc fileprivate func profileImageButtonTapped() {
         print("Tapped button")
         showChooseSourceTypeAlertController()
+    }
+    
+    @objc func joinOrg() {
+        performSegue(withIdentifier: "joinOrg", sender: self)
     }
 }

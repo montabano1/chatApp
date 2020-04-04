@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 func startPrivateChat(user1: FUser, user2: FUser) -> String {
     let userId1 = user1.objectId
@@ -137,6 +138,12 @@ func clearRecentCounter(chatRoomId: String) {
 }
 
 func clearRecentCounterItem(recent: NSDictionary) {
+    let badgeNum = UIApplication.shared.applicationIconBadgeNumber
+    if badgeNum >= (recent[kCOUNTER] as! Int) {
+        UIApplication.shared.applicationIconBadgeNumber -= (recent[kCOUNTER] as! Int)
+    } else {
+        UIApplication.shared.applicationIconBadgeNumber = 0
+    }
     reference(.Recent).document(recent[kRECENTID] as! String).updateData([kCOUNTER : 0])
 }
 

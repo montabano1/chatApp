@@ -19,6 +19,8 @@ enum FCollectionReference: String {
     case Call
     case Text
     case Reporteduser
+    case Organization
+    case Team
 }
 
 

@@ -160,6 +160,7 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
         
         FUser.loginUserWith(email: emailTextField.text!, password: passwordTextField.text!) { (error) in
             if error != nil {
+                ProgressHUD.dismiss()
                 return
             }
             self.goToApp()
@@ -167,7 +168,6 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
     }
     
     func registerUser() {
-        
         
         performSegue(withIdentifier: "welcomeToFinishReg", sender: self)
         cleanTextFields()

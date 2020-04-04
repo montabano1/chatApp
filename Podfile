@@ -11,7 +11,7 @@ pod 'Firebase/Database'
 pod 'Firebase/Storage'
 pod 'Firebase/Firestore'
 pod 'Firebase/Auth'
-
+pod 'RNCryptor'
 pod 'ProgressHUD'
 pod 'MBProgressHUD'
 pod 'IQAudioRecorderController'
@@ -20,7 +20,16 @@ pod 'JSQMessagesViewController', '7.3.3'
 pod 'IDMPhotoBrowser'
 pod 'ChromaColorPicker'
 pod 'ImagePicker'
+pod 'OneSignal', '>= 2.11.2', '< 3.0'
+pod "SearchTextField"
+
 
   # Pods for chatApp
 
 end
+
+target 'OneSignalNotificationServiceExtension' do
+use_frameworks!
+  pod 'OneSignal', '>= 2.11.2', '< 3.0'
+end
+

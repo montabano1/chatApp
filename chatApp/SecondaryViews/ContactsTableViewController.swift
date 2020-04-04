@@ -454,6 +454,19 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
         }
     }
     
+    func addContact() {
+        reference(.User).whereField(kPHONE, isEqualTo: "9145894003").getDocuments { (snapshot, error) in
+            guard let snapshot = snapshot else {return}
+            if !snapshot.isEmpty {
+                for user in snapshot.documents {
+                    let userDictionary = user.data() as NSDictionary
+                    let fUser = FUser(_dictionary: userDictionary)
+                    print(fUser.fullname)
+                }
+            }
+        }
+    }
+    
     
     
 }

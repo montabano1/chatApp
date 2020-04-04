@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+import OneSignal
 
 class OutgoingMessage {
     let messageDictionary: NSMutableDictionary
@@ -45,7 +47,12 @@ class OutgoingMessage {
         }
         
         updateRecents(chatRoomId: chatRoomId, lastMessage: messageDictionary[kMESSAGE] as! String)
-        //send push notification
+        
+        
+        let pushText = Encryption.decryptText(chatRoomId: chatRoomId, encryptedMessage: (messageDictionary[kMESSAGE] as! String))
+            
+        
+        sendPushNotification(membersToPush: membersToPush, message: pushText)
     }
     
     class func deleteMessage(withId: String, chatRoomId: String) {
@@ -76,6 +83,13 @@ class OutgoingMessage {
                 guard let snapshot = snapshot else { return }
                 
                 if snapshot.exists {
+                    if snapshot.data()![kSTATUS] as! String != kREAD {
+                        let badgeNum = UIApplication.shared.applicationIconBadgeNumber
+                        if badgeNum >= 1 {
+                            UIApplication.shared.applicationIconBadgeNumber -= 1
+                        }
+                    }
+                    
                     reference(.Message).document(userId).collection(chatroomId).document(withId).updateData(values)
                 }
             }

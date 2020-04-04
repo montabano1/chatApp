@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import CoreLocation
+import OneSignal
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
@@ -23,8 +24,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
         FirebaseApp.configure()
         
+//        func userDidLogin(userId: String) {
+//            self.startOneSignal()
+//        }
         
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(USER_DID_LOGIN_NOTIFICATION), object: nil, queue: nil) { (note) in
+            let userId = note.userInfo![kUSERID] as! String
+            UserDefaults.standard.set(userId, forKey: kUSERID)
+            UserDefaults.standard.synchronize()
+            
+            print("User has logged in........")
+            //userDidLogin(userId: userId)
+            
+        }
         
+        let onesignalInitSettings = [kOSSettingsKeyAutoPrompt: false]
+
+        OneSignal.initWithLaunchOptions(launchOptions,
+        appId: kONESIGNALAPPID,
+        handleNotificationAction: nil,
+        settings: onesignalInitSettings)
+
+        OneSignal.inFocusDisplayType = OSNotificationDisplayType.notification;
+
+        // Recommend moving the below line to prompt for push after informing the user about
+        //   how your app will use them.
+        OneSignal.promptForPushNotifications(userResponse: { accepted in
+        print("User accepted notifications: \(accepted)")
+        })
         return true
     }
     
@@ -43,10 +70,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
+        
+        if FUser.currentUser() != nil {
+            updateCurrentUserInFirestore(withValues: [kISONLINE : true]) { (success) in
+            }
+        }
+        
         locationManagerStart()
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
+        if FUser.currentUser() != nil {
+            updateCurrentUserInFirestore(withValues: [kISONLINE : false]) { (success) in
+                
+            }
+        }
         locationManagerStop()
     }
     
@@ -92,6 +130,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         coordinates = locations.last!.coordinate
+    }
+    
+    func startOneSignal() {
+        let status : OSPermissionSubscriptionState = OneSignal.getPermissionSubscriptionState()
+        let userID = status.subscriptionStatus.userId
+        let pushToken = status.subscriptionStatus.pushToken
+        
+        if pushToken != nil {
+            if let playerId = userID {
+                UserDefaults.standard.set(playerId, forKey: kPUSHID)
+            } else {
+                UserDefaults.standard.removeObject(forKey: kPUSHID)
+            }
+            UserDefaults.standard.synchronize()
+        }
+        
+        updateOneSignalId()
     }
     
 }

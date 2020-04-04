@@ -21,6 +21,8 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var recentListener: ListenerRegistration!
     let searchController = UISearchController(searchResultsController: nil)
     var popCounter = 0
+    var chatRoomId = ""
+    
     @IBAction func createNewChatButtonPressed(_ sender: Any) {
         selectUserForChat(isGroup: false)
     }
@@ -109,6 +111,13 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
             recent = filteredChats[indexPath.row]
         } else {
             recent = recentChats[indexPath.row]
+        }
+        
+        let badgeNum = UIApplication.shared.applicationIconBadgeNumber
+        if badgeNum >= (recent[kCOUNTER] as! Int) {
+            UIApplication.shared.applicationIconBadgeNumber -= (recent[kCOUNTER] as! Int)
+        } else {
+            UIApplication.shared.applicationIconBadgeNumber = 0
         }
         
         //restart chat
@@ -219,7 +228,8 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
         })
         if searchText.count >= 1 {
             for text in sentTexts {
-                if (text["text"] as! String).lowercased().contains(searchText.lowercased()) {
+                let message = Encryption.decryptText(chatRoomId: text["chatroomId"] as! String, encryptedMessage: text["text"] as! String).lowercased()
+                if message.contains(searchText.lowercased()) {
                     let tempChat = NSMutableDictionary()
                     tempChat["chatRoomID"] = text["chatroomId"]
                     tempChat["avatar"] = ""
