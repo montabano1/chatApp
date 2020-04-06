@@ -27,6 +27,12 @@
 		1B6D95BE24380A5E0092B446 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95BD24380A5E0092B446 /* NotificationService.swift */; };
 		1B6D95C224380A5E0092B446 /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1B6D95BB24380A5E0092B446 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1B6D95C9243832B10092B446 /* OrgTeamRegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95C8243832B10092B446 /* OrgTeamRegistrationViewController.swift */; };
+		1B6D95D524392CC40092B446 /* AddContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95D424392CC40092B446 /* AddContactViewController.swift */; };
+		1B6D95DD243ABABC0092B446 /* AllOrgsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95DC243ABABC0092B446 /* AllOrgsTableViewController.swift */; };
+		1B6D95DF243AC9E30092B446 /* CreateTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95DE243AC9E30092B446 /* CreateTeamViewController.swift */; };
+		1B8FF450243B75990099A94D /* CallTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8FF44F243B75990099A94D /* CallTableViewCell.swift */; };
+		1B8FF452243B763D0099A94D /* CallClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8FF451243B763D0099A94D /* CallClass.swift */; };
+		1B8FF45A243B80CD0099A94D /* CallTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8FF459243B80CD0099A94D /* CallTableViewController.swift */; };
 		1B9FBA55242E585300AA6690 /* PicturesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9FBA54242E585300AA6690 /* PicturesCollectionViewController.swift */; };
 		1B9FBA57242E589E00AA6690 /* PicturesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9FBA56242E589E00AA6690 /* PicturesCollectionViewCell.swift */; };
 		1BB532F0242C3D1F005BB386 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BB532EF242C3D1F005BB386 /* MapViewController.swift */; };
@@ -106,6 +112,12 @@
 		1B6D95BF24380A5E0092B446 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1B6D95C72438226A0092B446 /* OneSignalNotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneSignalNotificationServiceExtension.entitlements; sourceTree = "<group>"; };
 		1B6D95C8243832B10092B446 /* OrgTeamRegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgTeamRegistrationViewController.swift; sourceTree = "<group>"; };
+		1B6D95D424392CC40092B446 /* AddContactViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactViewController.swift; sourceTree = "<group>"; };
+		1B6D95DC243ABABC0092B446 /* AllOrgsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllOrgsTableViewController.swift; sourceTree = "<group>"; };
+		1B6D95DE243AC9E30092B446 /* CreateTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTeamViewController.swift; sourceTree = "<group>"; };
+		1B8FF44F243B75990099A94D /* CallTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallTableViewCell.swift; sourceTree = "<group>"; };
+		1B8FF451243B763D0099A94D /* CallClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallClass.swift; sourceTree = "<group>"; };
+		1B8FF459243B80CD0099A94D /* CallTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallTableViewController.swift; sourceTree = "<group>"; };
 		1B9FBA54242E585300AA6690 /* PicturesCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicturesCollectionViewController.swift; sourceTree = "<group>"; };
 		1B9FBA56242E589E00AA6690 /* PicturesCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicturesCollectionViewCell.swift; sourceTree = "<group>"; };
 		1BB532EF242C3D1F005BB386 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -251,6 +263,7 @@
 				1BD0E2BF242BB05F00DD2B5D /* PhotoMediaItem.swift */,
 				1B6D95B22437AD240092B446 /* Encryption.swift */,
 				1B6D95B52437DE760092B446 /* PushNotifications.swift */,
+				1B8FF451243B763D0099A94D /* CallClass.swift */,
 				1BD0E2C1242BE47200DD2B5D /* VideoMessage.swift */,
 				1BD0E2AF242502E400DD2B5D /* Recent.swift */,
 			);
@@ -263,6 +276,7 @@
 				1BD0E283242425B600DD2B5D /* UserTableViewCell.swift */,
 				1B9FBA56242E589E00AA6690 /* PicturesCollectionViewCell.swift */,
 				1B6D959C24339F330092B446 /* GroupMemberCollectionViewCell.swift */,
+				1B8FF44F243B75990099A94D /* CallTableViewCell.swift */,
 				1BD0E2B32428E64700DD2B5D /* RecentChatTableViewCell.swift */,
 			);
 			path = CustomCells;
@@ -284,6 +298,7 @@
 			children = (
 				1BD0E28124241D3500DD2B5D /* SettingsTableViewController.swift */,
 				1BD0E28A2424342C00DD2B5D /* ChatsViewController.swift */,
+				1B8FF459243B80CD0099A94D /* CallTableViewController.swift */,
 			);
 			path = MainViews;
 			sourceTree = "<group>";
@@ -295,8 +310,11 @@
 				1BD0E28C2424613600DD2B5D /* ProfileViewTableViewController.swift */,
 				1BB532EF242C3D1F005BB386 /* MapViewController.swift */,
 				1B9FBA54242E585300AA6690 /* PicturesCollectionViewController.swift */,
+				1B6D95DC243ABABC0092B446 /* AllOrgsTableViewController.swift */,
+				1B6D95DE243AC9E30092B446 /* CreateTeamViewController.swift */,
 				1B6D956224319AED0092B446 /* ContactsTableViewController.swift */,
 				1B6D959E2433A0D30092B446 /* NewGroupViewController.swift */,
+				1B6D95D424392CC40092B446 /* AddContactViewController.swift */,
 				1B6D95AC243460BF0092B446 /* GroupViewController.swift */,
 				1B6D95AE24350F970092B446 /* InviteUserTableViewController.swift */,
 				1BD0E2B524290B3000DD2B5D /* ChatViewController.swift */,
@@ -518,10 +536,13 @@
 				1BD0E2BC24293B0300DD2B5D /* IncomingMessages.swift in Sources */,
 				1BD0E2A224246E3A00DD2B5D /* AudioViewController.swift in Sources */,
 				1BB532F0242C3D1F005BB386 /* MapViewController.swift in Sources */,
+				1B6D95DF243AC9E30092B446 /* CreateTeamViewController.swift in Sources */,
+				1B8FF450243B75990099A94D /* CallTableViewCell.swift in Sources */,
 				1BD0E2B42428E64700DD2B5D /* RecentChatTableViewCell.swift in Sources */,
 				1B6D956024318B2B0092B446 /* EditProfileTableViewController.swift in Sources */,
 				1BD0E29124246DD600DD2B5D /* FCollectionReference.swift in Sources */,
 				1B6D959F2433A0D30092B446 /* NewGroupViewController.swift in Sources */,
+				1B8FF452243B763D0099A94D /* CallClass.swift in Sources */,
 				1BD0E25B2423DE7F00DD2B5D /* WelcomeViewController.swift in Sources */,
 				1BD0E2A124246E3A00DD2B5D /* Constants.swift in Sources */,
 				1BD0E28D2424613600DD2B5D /* ProfileViewTableViewController.swift in Sources */,
@@ -532,6 +553,7 @@
 				1B6D95AD243460BF0092B446 /* GroupViewController.swift in Sources */,
 				1BD0E2452423DB6000DD2B5D /* AppDelegate.swift in Sources */,
 				1B6D95B1243794B60092B446 /* ColorPickerViewController.swift in Sources */,
+				1B6D95D524392CC40092B446 /* AddContactViewController.swift in Sources */,
 				1BD0E284242425B600DD2B5D /* UserTableViewCell.swift in Sources */,
 				1BD0E2472423DB6000DD2B5D /* SceneDelegate.swift in Sources */,
 				1BD0E28224241D3500DD2B5D /* SettingsTableViewController.swift in Sources */,
@@ -543,6 +565,8 @@
 				1BD0E2B0242502E400DD2B5D /* Recent.swift in Sources */,
 				1BD0E2BA2429315100DD2B5D /* OutgoingMessages.swift in Sources */,
 				1BD0E2B624290B3000DD2B5D /* ChatViewController.swift in Sources */,
+				1B8FF45A243B80CD0099A94D /* CallTableViewController.swift in Sources */,
+				1B6D95DD243ABABC0092B446 /* AllOrgsTableViewController.swift in Sources */,
 				1B9FBA57242E589E00AA6690 /* PicturesCollectionViewCell.swift in Sources */,
 				1B6D95B32437AD240092B446 /* Encryption.swift in Sources */,
 				1B6D95582430EBCB0092B446 /* HelperFunctions.swift in Sources */,
@@ -594,11 +618,12 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.04;
 				PRODUCT_BUNDLE_IDENTIFIER = michaelmontalbano.chatApp2.OneSignalNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -617,11 +642,12 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.04;
 				PRODUCT_BUNDLE_IDENTIFIER = michaelmontalbano.chatApp2.OneSignalNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -748,14 +774,14 @@
 				CODE_SIGN_ENTITLEMENTS = monTalk.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = P4SSA897CK;
 				INFOPLIST_FILE = chatApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.02;
+				MARKETING_VERSION = 1.04;
 				PRODUCT_BUNDLE_IDENTIFIER = michaelmontalbano.chatApp2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -773,14 +799,14 @@
 				CODE_SIGN_ENTITLEMENTS = monTalk.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = P4SSA897CK;
 				INFOPLIST_FILE = chatApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.02;
+				MARKETING_VERSION = 1.04;
 				PRODUCT_BUNDLE_IDENTIFIER = michaelmontalbano.chatApp2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

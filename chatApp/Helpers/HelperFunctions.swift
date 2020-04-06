@@ -100,10 +100,10 @@ func formatCallTime(date: Date) -> String {
     if (seconds < 60) {
         elapsed = "Just now"
     }  else if (seconds < 24 * 60 * 60) {
-       
+        
         let currentDateFormater = dateFormatter()
-        currentDateFormater.dateFormat = "HH:mm"
-
+        currentDateFormater.dateFormat = "HH:mm a"
+        
         elapsed = "\(currentDateFormater.string(from: date))"
     } else {
         let currentDateFormater = dateFormatter()
@@ -189,6 +189,27 @@ func imageFromInitials(firstName: String?, lastName: String?, withBlock: @escapi
     UIGraphicsEndImageContext()
     
     withBlock(img!)
+}
+
+
+extension UIViewController {
+    var topbarHeight: CGFloat {
+        return (UIApplication.shared.statusBarFrame.height ?? 0.0) +
+            (self.navigationController?.navigationBar.frame.height ?? 0.0)
+    }
+}
+
+extension UIImage {
+    var noir: UIImage? {
+        let context = CIContext(options: nil)
+        guard let currentFilter = CIFilter(name: "CIPhotoEffectNoir") else { return nil }
+        currentFilter.setValue(CIImage(image: self), forKey: kCIInputImageKey)
+        if let output = currentFilter.outputImage,
+            let cgImage = context.createCGImage(output, from: output.extent) {
+            return UIImage(cgImage: cgImage, scale: scale, orientation: imageOrientation)
+        }
+        return nil
+    }
 }
 
 

@@ -218,8 +218,6 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
         var tempDictionary : Dictionary = [kFIRSTNAME : firstNameTextField.text!,
                                            kLASTNAME : lastNameTextField.text!,
                                            kFULLNAME : fullname,
-                                           kORGANIZATION : organizationTextField.text!,
-                                           kTEAM  : teamTextField.text!,
                                            kPHONE : phoneNumberTextField.text!] as [String:Any]
         
         if avatarImage == nil {
@@ -255,8 +253,8 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
             }
             
             ProgressHUD.dismiss()
-            self.joinOrg()
-            //self.goToApp()
+            //self.joinOrg()
+            self.goToApp()
         }
     }
     
@@ -268,7 +266,13 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
         
         let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
         
-        self.present(mainView, animated: true, completion: nil)
+        let window = self.view.window
+        window?.rootViewController = mainView
+        UIView.transition(with: window!,
+        duration: 0.3,
+        options: .transitionCrossDissolve,
+        animations: nil,
+        completion: nil)
     }
     
     func dismissKeyboard() {

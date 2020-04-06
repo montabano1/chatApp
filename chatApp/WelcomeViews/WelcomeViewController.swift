@@ -13,7 +13,7 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
     
     var titleImageView = UIImageView()
     var titleLabel = UILabel()
-    
+    var errorLabel = UILabel()
     var emailTextField = UITextField()
     var passwordTextField = UITextField()
     var confirmTextField = UITextField()
@@ -32,6 +32,9 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let tapper = UITapGestureRecognizer(target: self, action: #selector(endEditing))
+        view.addGestureRecognizer(tapper)
         
         width = Int(view.bounds.width)
         height = Int(view.bounds.height)
@@ -104,10 +107,25 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
         registerButton.setTitleColor(#colorLiteral(red: 0.9931543469, green: 0.709420085, blue: 0.327634573, alpha: 1), for: [])
         registerButton.addTarget(self, action: #selector(registerHit), for: .touchUpInside)
         view.addSubview(registerButton)
+        
+        errorLabel.frame = confirmTextField.frame
+        errorLabel.text = "Incorrect username/password"
+        errorLabel.textColor = .red
+        errorLabel.sizeToFit()
+        errorLabel.center.x = view.center.x
+        errorLabel.alpha = 0
+        errorLabel.textAlignment = .center
+        view.addSubview(errorLabel)
+    }
+    
+    @objc func endEditing() {
+        self.view.endEditing(true)
+        errorLabel.alpha = 0
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
+        errorLabel.alpha = 0
         return true
     }
     
@@ -132,6 +150,7 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func registerHit() {
+        errorLabel.alpha = 0
         self.view.endEditing(true)
         UIView.animate(withDuration: 0.5) {
             self.confirmTextField.isHidden = false
@@ -160,6 +179,7 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
         
         FUser.loginUserWith(email: emailTextField.text!, password: passwordTextField.text!) { (error) in
             if error != nil {
+                self.errorLabel.alpha = 1
                 ProgressHUD.dismiss()
                 return
             }
@@ -199,7 +219,13 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
         
         let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
         
-        self.present(mainView, animated: true, completion: nil)
+        let window = self.view.window
+        window?.rootViewController = mainView
+        UIView.transition(with: window!,
+        duration: 0.3,
+        options: .transitionCrossDissolve,
+        animations: nil,
+        completion: nil)
         
     }
     

@@ -15,15 +15,23 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
     
     var users: [FUser] = []
     var matchedUsers: [FUser] = []
+    var matchedUserIds: [String] = []
+    
     var filteredMatchedUsers: [FUser] = []
     var allUsersGrouped = NSDictionary() as! [String : [FUser]]
     var sectionTitleList: [String] = []
+    
+    var addedLabels: [UILabel] = []
     
     var isGroup = false
     var filterType = ""
     var memberIdsOfGroupChat: [String] = []
     var membersOfGroupChat: [FUser] = []
+    var checkedUsers: [String] = []
     
+    var filteredContacts: [FUser] = []
+    var segmentedControl = UISegmentedControl()
+    var startIndex = 2
     let headerView = UIView()
     let participantsLabel = UILabel()
     var originalFilter = false
@@ -71,12 +79,15 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
     
     override func viewWillAppear(_ animated: Bool) {
         
-        headerView.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 40)
+        let width = view.bounds.width
+        
+        headerView.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 80)
         tableView.tableHeaderView = headerView
         tableView.tableFooterView = UIView()
         
         membersOfGroupChat = []
         memberIdsOfGroupChat = []
+        
         
         loadUsers()
         
@@ -84,6 +95,8 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let width = view.bounds.width
         
         title = "Contacts"
         navigationItem.largeTitleDisplayMode = .never
@@ -93,14 +106,35 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
         searchController.dimsBackgroundDuringPresentation = false
         definesPresentationContext = true
         
-        participantsLabel.frame = CGRect(x: 20, y: 0, width: 200, height: 40)
+        participantsLabel.frame = CGRect(x: 20, y: 40, width: 200, height: 40)
+        
+        
         headerView.addSubview(participantsLabel)
+        
+        segmentedControl.frame = CGRect(x: 20, y: 0, width: width, height: 40)
+        segmentedControl = UISegmentedControl(items: ["My Teams", "My Org", "All Contacts"])
+        segmentedControl.addTarget(self, action: #selector(filterTeam), for: .valueChanged)
+        segmentedControl.setWidth(width/3, forSegmentAt: 0)
+        segmentedControl.setWidth(width/3, forSegmentAt: 1)
+        segmentedControl.setWidth(width/3, forSegmentAt: 2)
+        segmentedControl.selectedSegmentIndex = startIndex
+        headerView.addSubview(segmentedControl)
+        
         
         setupButtons()
         
     }
     
-    //MARK: TableViewDataSource
+    @objc func filterTeam() {
+        startIndex = segmentedControl.selectedSegmentIndex
+        for label in addedLabels {
+            label.removeFromSuperview()
+        }
+        addedLabels.removeAll()
+        compareUsers()
+    }
+    
+    //MARK: TableViewDataSofurce
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         if searchController.isActive && searchController.searchBar.text != "" {
@@ -112,8 +146,7 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
     
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        if searchController.isActive && searchController.searchBar.text != "" {
+        if searchController.isActive && searchController.searchBar.text != ""   {
             return filteredMatchedUsers.count
         } else {
             // find section title
@@ -125,67 +158,144 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
             // return count for users
             return users!.count
         }
+       
         
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! UserTableViewCell
-        
         var user: FUser
-        
         if searchController.isActive && searchController.searchBar.text != "" {
             user = filteredMatchedUsers[indexPath.row]
         } else {
-            
             let sectionTitle = self.sectionTitleList[indexPath.section]
-            //get all users of the section
             let users = self.allUsersGrouped[sectionTitle]
-            
             user = users![indexPath.row]
         }
-        
+        if checkedUsers.contains(user.objectId) {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
         cell.delegate = self
-        cell.generateCellWith(fUser: user, indexPath: indexPath)
         
         switch filterType {
         case "team":
-            if user.team == FUser.currentUser()?.team {
-                cell.accessoryType = .checkmark
-                memberIdsOfGroupChat.append(user.objectId)
-                membersOfGroupChat.append(user)
+            var checkMe = false
+            let myTeams = FUser.currentUser()?.teams
+            for team in user.teams {
+                if (myTeams?.contains(team))! {
+                    checkMe = true
+                }
+            }
+            if checkMe {
+                if !memberIdsOfGroupChat.contains(user.objectId) {
+                    cell.accessoryType = .checkmark
+                    memberIdsOfGroupChat.append(user.objectId)
+                    membersOfGroupChat.append(user)
+                    checkedUsers.append(user.objectId)
+                }
                 self.navigationItem.rightBarButtonItems!.first!.isEnabled = true
+            } else {
+                cell.accessoryType = .none
+            }
+        case "org":
+            var checkMe = false
+            let myOrgs = FUser.currentUser()?.organizations
+            for org in user.organizations {
+                if (myOrgs?.contains(org))! {
+                    checkMe = true
+                }
+            }
+            if checkMe {
+                if !memberIdsOfGroupChat.contains(user.objectId) {
+                    cell.accessoryType = .checkmark
+                    memberIdsOfGroupChat.append(user.objectId)
+                    membersOfGroupChat.append(user)
+                    checkedUsers.append(user.objectId)
+                }
+                self.navigationItem.rightBarButtonItems!.first!.isEnabled = true
+            } else {
+                cell.accessoryType = .none
+            }
+        default:
+            cell.accessoryType = .none
+        }
+        
+        switch startIndex {
+        case 0:
+            var showMe = false
+            var teamText = ""
+            let myTeams = FUser.currentUser()?.teams
+            for team in user.teams {
+                if (myTeams?.contains(team))! {
+                    showMe = true
+                    teamText += " " + team
+                }
+            }
+            if showMe {
                 let teamName = UILabel()
-                teamName.text = "" + user.organization + "-" + user.team
+                teamName.text = "" + teamText
                 cell.addSubview(teamName)
+                addedLabels.append(teamName)
                 teamName.frame = CGRect(x: cell.frame.width , y: 75, width: 100, height: 25)
                 teamName.sizeToFit()
                 teamName.center.x -= (teamName.frame.width + 10)
             }
-        case "org":
-            if user.organization == FUser.currentUser()?.organization {
-                cell.accessoryType = .checkmark
-                memberIdsOfGroupChat.append(user.objectId)
-                membersOfGroupChat.append(user)
-                self.navigationItem.rightBarButtonItems!.first!.isEnabled = true
+        case 1:
+            var showMe = false
+            var orgText = ""
+            let myOrgs = FUser.currentUser()?.organizations
+            for org in user.organizations {
+                if (myOrgs?.contains(org))! {
+                    showMe = true
+                    orgText += " " + org
+                }
+            }
+            if showMe {
                 let teamName = UILabel()
-                teamName.text = "" + user.organization
+                teamName.text = "" + orgText
                 cell.addSubview(teamName)
+                addedLabels.append(teamName)
                 teamName.frame = CGRect(x: cell.frame.width , y: 75, width: 100, height: 25)
                 teamName.sizeToFit()
                 teamName.center.x -= (teamName.frame.width + 10)
             }
         default:
-            print("no group filter")
+            var showMe = false
+            var teamText = ""
+            let myTeams = FUser.currentUser()?.teams
+            let myOrgs = FUser.currentUser()?.organizations
+            for team in user.teams {
+                if (myTeams?.contains(team))! {
+                    showMe = true
+                    teamText += " " + team
+                }
+            }
+            if !showMe {
+                for org in user.organizations {
+                    if (myOrgs?.contains(org))! {
+                        showMe = true
+                        teamText += " " + org
+                    }
+                }
+            }
+            if showMe {
+                let teamName = UILabel()
+                teamName.text = "" + teamText
+                cell.addSubview(teamName)
+                addedLabels.append(teamName)
+                teamName.frame = CGRect(x: cell.frame.width , y: 75, width: 100, height: 25)
+                teamName.sizeToFit()
+                teamName.center.x -= (teamName.frame.width + 10)
+            }
         }
-        originalFilter = true
+        cell.generateCellWith(fUser: user, indexPath: indexPath)
         participantsLabel.text = "PARTICIPANTS: \(membersOfGroupChat.count)"
         return cell
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        
         if searchController.isActive && searchController.searchBar.text != "" {
             return ""
         } else {
@@ -201,21 +311,14 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
         }
     }
     
-    
     override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
         return index
     }
     
-    
-    //MARK: TableViewDelegate
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         tableView.deselectRow(at: indexPath, animated: true)
-        
         let sectionTitle = self.sectionTitleList[indexPath.section]
         let userToChat : FUser
-        
         if searchController.isActive && searchController.searchBar.text != "" {
             userToChat = filteredMatchedUsers[indexPath.row]
         } else {
@@ -244,17 +347,18 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
                 }
             }
             let selected = memberIdsOfGroupChat.contains(userToChat.objectId)
-            
             if selected {
                 let objectIndex = memberIdsOfGroupChat.lastIndex(of: userToChat.objectId)
                 memberIdsOfGroupChat.remove(at: objectIndex!)
                 membersOfGroupChat.remove(at: objectIndex!)
+                let checkedIndex = checkedUsers.lastIndex(of: userToChat.objectId)
+                checkedUsers.remove(at: checkedIndex!)
             } else {
                 memberIdsOfGroupChat.append(userToChat.objectId)
                 membersOfGroupChat.append(userToChat)
+                checkedUsers.append(userToChat.objectId)
             }
             participantsLabel.text = "PARTICIPANTS: \(membersOfGroupChat.count)"
-            
             self.navigationItem.rightBarButtonItem?.isEnabled = memberIdsOfGroupChat.count > 0
         }
         
@@ -271,39 +375,32 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
     
     @objc func nextButtonPressed() {
         let newGroupVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "newGroup") as! NewGroupViewController
-        
         newGroupVC.memberIds = memberIdsOfGroupChat
         newGroupVC.allMembers = membersOfGroupChat
-        
         self.navigationController?.pushViewController(newGroupVC, animated: true)
-        
     }
     
     func loadUsers() {
         ProgressHUD.show()
-        
         reference(.User).order(by: kFIRSTNAME, descending: false).getDocuments { (snapshot, error) in
             guard let snapshot = snapshot else {
                 ProgressHUD.dismiss()
                 return
             }
-            
             if !snapshot.isEmpty {
                 self.matchedUsers = []
+                self.matchedUserIds = []
                 self.users.removeAll()
-                
                 for userDictionary in snapshot.documents {
                     let userDictionary = userDictionary.data() as NSDictionary
                     let fUser = FUser(_dictionary: userDictionary)
                     if fUser.objectId != FUser.currentId() && !fUser.blockedUsers.contains(FUser.currentId()) {
                         self.users.append(fUser)
                     }
-                    
                 }
                 ProgressHUD.dismiss()
                 self.tableView.reloadData()
             }
-            
             ProgressHUD.dismiss()
             self.compareUsers()
         }
@@ -311,65 +408,112 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
     
     
     func compareUsers() {
-        
-        
-        for user in users {
-            if FUser.currentUser()?.organization == user.organization {
-                matchedUsers.append(user)
+        var contacts = FUser.currentUser()?.contacts
+        var updateMe = false
+        matchedUsers.removeAll()
+        matchedUserIds.removeAll()
+        if startIndex == 2 {
+            for user in users {
+                for org in user.organizations {
+                    let myOrgs = FUser.currentUser()?.organizations
+                    if (myOrgs?.contains(org))! {
+                        if !(contacts?.contains(user.objectId))! {
+                            contacts?.append(user.objectId)
+                        }
+                        updateMe = true
+                        if !matchedUserIds.contains(user.objectId) {
+                            matchedUsers.append(user)
+                            matchedUserIds.append(user.objectId)
+                        }
+                        continue
+                    }
+                }
+                if user.phoneNumber != "" {
+                    let contact = searchForContactUsingPhoneNumber(phoneNumber: user.phoneNumber)
+                    if contact.count > 0 {
+                        if !(contacts?.contains(user.objectId))! {
+                            contacts?.append(user.objectId)
+                        }
+                        updateMe = true
+                        if !matchedUserIds.contains(user.objectId) {
+                            matchedUsers.append(user)
+                            matchedUserIds.append(user.objectId)
+                        }
+                        continue
+                    }
+                }
+                if (contacts?.contains(user.objectId))! {
+                        if !matchedUserIds.contains(user.objectId) {
+                            matchedUsers.append(user)
+                            matchedUserIds.append(user.objectId)
+                        }
+                        continue
+                }
                 self.tableView.reloadData()
             }
-            
-            if user.phoneNumber != "" {
-                
-                
-                let contact = searchForContactUsingPhoneNumber(phoneNumber: user.phoneNumber)
-                
-                //if we have a match, we add to our array to display them
-                if contact.count > 0 {
-                    matchedUsers.append(user)
+        } else if startIndex == 1 {
+            for user in users {
+                for org in user.organizations {
+                    let myOrgs = FUser.currentUser()?.organizations
+                    if (myOrgs?.contains(org))! {
+                        if !(contacts?.contains(user.objectId))! {
+                            contacts?.append(user.objectId)
+                        }
+                        updateMe = true
+                        if !matchedUserIds.contains(user.objectId) {
+                            matchedUsers.append(user)
+                            matchedUserIds.append(user.objectId)
+                        }
+                    }
                 }
-                
                 self.tableView.reloadData()
-                
+            }
+        } else if startIndex == 0 {
+            for user in users {
+                for team in user.teams {
+                    let myTeams = FUser.currentUser()?.teams
+                    if (myTeams?.contains(team))! {
+                        if !(contacts?.contains(user.objectId))! {
+                            contacts?.append(user.objectId)
+                        }
+                        updateMe = true
+                        if !matchedUserIds.contains(user.objectId) {
+                            matchedUsers.append(user)
+                            matchedUserIds.append(user.objectId)
+                        }
+                    }
+                }
+                self.tableView.reloadData()
             }
         }
-        //        updateInformationLabel()
-        
+        if updateMe {
+            updateCurrentUserInFirestore(withValues: [kCONTACT : contacts as! [String]]) { (success) in
+            }
+        }
+        participantsLabel.text = "PARTICIPANTS: \(membersOfGroupChat.count)"
         self.splitDataInToSection()
     }
     
-    //MARK: Contacts
-    
     func searchForContactUsingPhoneNumber(phoneNumber: String) -> [CNContact] {
-        
         var result: [CNContact] = []
-        
-        //go through all contacts
         for contact in self.contacts {
-            
             if !contact.phoneNumbers.isEmpty {
-                
                 for number in contact.phoneNumbers {
                     let x = (number.value).value(forKey: "digits") as! String
-                    if phoneNumber == x {
+                    let last10 = String(x.suffix(10))
+                    if phoneNumber == last10 {
                         result.append(contact)
                     }
                 }
-                
                 self.tableView.reloadData()
-                
             }
         }
-        
         return result
     }
     
-    
     func updatePhoneNumber(phoneNumber: String, replacePlusSign: Bool) -> String {
-        
         if replacePlusSign {
             return phoneNumber.replacingOccurrences(of: "+", with: "").components(separatedBy: NSCharacterSet.decimalDigits.inverted).joined(separator: "")
-            
         } else {
             return phoneNumber.components(separatedBy: NSCharacterSet.decimalDigits.inverted).joined(separator: "")
         }
@@ -377,48 +521,30 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
     
     
     fileprivate func splitDataInToSection() {
-        
-        // set section title "" at initial
+        allUsersGrouped.removeAll()
+        sectionTitleList = []
         var sectionTitle: String = ""
-        
-        // iterate all records from array
         for i in 0..<self.matchedUsers.count {
-            
-            // get current record
             let currentUser = self.matchedUsers[i]
-            
-            // find first character from current record
-            let firstChar = currentUser.firstname.first!
-            
-            // convert first character into string
+            let firstChar = currentUser.firstname.first!.uppercased()
             let firstCharString = "\(firstChar)"
-            
-            // if first character not match with past section title then create new section
             if firstCharString != sectionTitle {
-                
-                // set new title for section
                 sectionTitle = firstCharString
-                
-                // add new section having key as section title and value as empty array of string
                 self.allUsersGrouped[sectionTitle] = []
-                
-                // append title within section title list
                 if !sectionTitleList.contains(sectionTitle) {
                     self.sectionTitleList.append(sectionTitle)
                 }
-                
+                sectionTitleList = sectionTitleList.sorted()
             }
-            
-            // add record to the section
             self.allUsersGrouped[firstCharString]?.append(currentUser)
         }
-        
+        participantsLabel.text = "PARTICIPANTS: \(membersOfGroupChat.count)"
         tableView.reloadData()
     }
     
     func filteredContentForSearchText(searchText: String, scope: String = "All") {
         filteredMatchedUsers = matchedUsers.filter({ (user) -> Bool in
-            return user.firstname.lowercased().contains(searchText.lowercased()) && !checkBlockedStatus(withUser: user)
+            return user.fullname.lowercased().contains(searchText.lowercased()) && !checkBlockedStatus(withUser: user)
         })
         tableView.reloadData()
     }
@@ -429,9 +555,7 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
     
     func didTapAvatarImage(indexPath: IndexPath) {
         let profileVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "profileView") as! ProfileViewTableViewController
-        
         var user: FUser!
-        
         if searchController.isActive && searchController.searchBar.text != "" {
             user = filteredMatchedUsers[indexPath.row]
         } else {
@@ -444,27 +568,24 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
     }
     
     func setupButtons() {
+        let addButton: UIButton = UIButton(type: UIButton.ButtonType.contactAdd)
+        addButton.addTarget(self, action: #selector(addContact), for: .touchUpInside)
+        addButton.frame = CGRect(x: 0, y: 0, width: 50, height: 30)
+        let addBarButton = UIBarButtonItem(customView: addButton)
         if isGroup {
             let nextButton = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(self.nextButtonPressed))
             self.navigationItem.rightBarButtonItem = nextButton
+            self.navigationItem.rightBarButtonItems = [nextButton, addBarButton]
             self.navigationItem.rightBarButtonItems!.first!.isEnabled = false
         } else {
             let inviteButton = UIBarButtonItem(image: UIImage(named: "invite"), style: .plain, target: self, action: #selector(self.inviteButtonPressed))
-            self.navigationItem.rightBarButtonItems = [inviteButton]
+            self.navigationItem.rightBarButtonItems = [inviteButton, addBarButton]
         }
     }
     
-    func addContact() {
-        reference(.User).whereField(kPHONE, isEqualTo: "9145894003").getDocuments { (snapshot, error) in
-            guard let snapshot = snapshot else {return}
-            if !snapshot.isEmpty {
-                for user in snapshot.documents {
-                    let userDictionary = user.data() as NSDictionary
-                    let fUser = FUser(_dictionary: userDictionary)
-                    print(fUser.fullname)
-                }
-            }
-        }
+    @objc func addContact() {
+        let addVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "addContact") as! AddContactViewController
+        self.navigationController?.pushViewController(addVC, animated: true)
     }
     
     

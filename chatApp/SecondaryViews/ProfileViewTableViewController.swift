@@ -11,6 +11,8 @@ import ProgressHUD
 
 class ProfileViewTableViewController: UITableViewController {
 
+    @IBOutlet weak var orgCell: UITableViewCell!
+    @IBOutlet weak var orgView: UIView!
     
     @IBOutlet weak var fullNameLabel: UILabel!
     
@@ -33,11 +35,15 @@ class ProfileViewTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("Got here!")
         setupUI()
     }
 
     @IBAction func callButtonPressed(_ sender: Any) {
-        print("call user \(user!.fullname)")
+        let currentUser = FUser.currentUser()!
+        let call = CallClass(_callerId: currentUser.objectId, _withUserId: user!.objectId, _callerFullName: currentUser.fullname, _withUserFullName: user!.fullname)
+        call.saveCallInBackground()
+        callButtonOutlet.isEnabled = false
     }
     
     @IBAction func chatButtonPressed(_ sender: Any) {
@@ -87,12 +93,12 @@ class ProfileViewTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
+            return 1
+        }
+        if section == 1 {
             return 3
         }
-        if section == 2 {
-            return 2
-        }
-        return 1
+        return 2
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -116,17 +122,43 @@ class ProfileViewTableViewController: UITableViewController {
             self.title = "Profile"
             fullNameLabel.text = user!.fullname
             phoneNumberLabel.text = user!.phoneNumber
-            orgNameLabel.text = user!.organization
-            teamNameLabel.text = user!.team
-            
+            orgNameLabel.text = ""
+            teamNameLabel.text = ""
+            for org in user!.organizations {
+                orgNameLabel.text! += "\(org)\n"
+            }
+            for team in user!.teams {
+                teamNameLabel.text! += "\(team)\n"
+            }
+            orgNameLabel.numberOfLines = 0
+            orgNameLabel.sizeToFit()
+            teamNameLabel.numberOfLines = 0
+            teamNameLabel.sizeToFit()
+            orgNameLabel.center.y = orgView.center.y
             updateBlockStatus()
-            
             imageFromData(pictureData: user!.avatar) { (avatarImage) in
                 if avatarImage != nil {
                     self.avatarImageView.image = avatarImage!.circleMasked
                 }
             }
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 0 && indexPath.row == 0 {
+            return 100
+        }
+        if indexPath.section == 1 && indexPath.row == 1 {
+            return max(CGFloat((user?.organizations.count)! * 40),40)
+        }
+        if indexPath.section == 1 && indexPath.row == 2 {
+            return max(30,CGFloat((user?.teams.count)! * 40))
+        }
+        if indexPath.section == 1 && indexPath.row == 0 {
+            return 75
+        }
+        return 45
+        
     }
     
     func updateBlockStatus() {

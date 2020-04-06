@@ -11,7 +11,7 @@ import ProgressHUD
 import ChromaColorPicker
 
 class InitialOptionsViewController: UIViewController {
-
+    
     var textButton = UIButton()
     var textLabel = UILabel()
     var videoButton = UIButton()
@@ -57,6 +57,19 @@ class InitialOptionsViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        if let message = UserDefaults.standard.string(forKey: "initialSMessage") {
+            if message.count > 0 {
+                print("\(message)")
+                ProgressHUD.showSuccess(message)
+                UserDefaults.standard.set("", forKey: "initialSMessage")
+            }
+        }
+        if let message = UserDefaults.standard.string(forKey: "initialEMessage") {
+            if message.count > 0 {
+                ProgressHUD.showError(message)
+                UserDefaults.standard.set("", forKey: "initialEMessage")
+            }
+        }
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = true
         width = view.bounds.width
@@ -72,10 +85,10 @@ class InitialOptionsViewController: UIViewController {
         }
         videoButton.isHidden = true
         videoLabel.isHidden = true
-        broadcastButton.isHidden = true
-        broadcastLabel.isHidden = true
-        callButton.isHidden = true
-        callLabel.isHidden = true
+//        broadcastButton.isHidden = true
+//        broadcastLabel.isHidden = true
+        //callButton.isHidden = true
+        //callLabel.isHidden = true
         
         
         modeButtons = [singleMessage, groupMessage, teamMessage, orgMessage]
@@ -165,13 +178,13 @@ class InitialOptionsViewController: UIViewController {
         view.addSubview(videoLabel)
         
         callButton.frame = CGRect(x: width/6, y: 1, width: width/4, height: width/4)
-        callButton.setImage(UIImage(named: "optioncall")?.scaleImageToSize(newSize: CGSize(width: width/5, height: width/5)), for: [])
+        callButton.setImage(UIImage(named: "optionsTeam")?.scaleImageToSize(newSize: CGSize(width: width/5, height: width/5)), for: [])
         callButton.imageView?.contentMode = .center
         callButton.center.y = view.center.y
-        callButton.addTarget(self, action: #selector(notAvailable), for: .touchUpInside)
+        callButton.addTarget(self, action: #selector(joinOrg), for: .touchUpInside)
         view.addSubview(callButton)
-        callLabel.frame = CGRect(x: callButton.frame.minX, y: callButton.frame.maxY + 5, width: width/4, height: 30)
-        callLabel.text = "Start a new \n voice call"
+        callLabel.frame = CGRect(x: callButton.frame.minX, y: callButton.frame.maxY + 5, width: width/2, height: 30)
+        callLabel.text = "Org/Team \n Management"
         callLabel.numberOfLines = 2
         callLabel.textAlignment = .center
         callLabel.font = UIFont.systemFont(ofSize: 18)
@@ -180,13 +193,13 @@ class InitialOptionsViewController: UIViewController {
         view.addSubview(callLabel)
             
         broadcastButton.frame = CGRect(x: 7*width/12, y: 1, width: width/4, height: width/4)
-        broadcastButton.setImage(UIImage(named: "protest")?.scaleImageToSize(newSize: CGSize(width: width/5, height: width/5)), for: [])
+        broadcastButton.setImage(UIImage(named: "optioncall")?.scaleImageToSize(newSize: CGSize(width: width/5, height: width/5)), for: [])
         broadcastButton.imageView?.contentMode = .center
         broadcastButton.center.y = view.center.y
-        broadcastButton.addTarget(self, action: #selector(notAvailable), for: .touchUpInside)
+        broadcastButton.addTarget(self, action: #selector(goToCalls), for: .touchUpInside)
         view.addSubview(broadcastButton)
         broadcastLabel.frame = CGRect(x: broadcastButton.frame.minX, y: broadcastButton.frame.maxY + 5, width: width, height: 30)
-        broadcastLabel.text = "Make an \n announcement"
+        broadcastLabel.text = "Make a call"
         broadcastLabel.numberOfLines = 2
         broadcastLabel.textAlignment = .center
         broadcastLabel.font = UIFont.systemFont(ofSize: 18)
@@ -244,7 +257,7 @@ class InitialOptionsViewController: UIViewController {
         self.orgMessageLabel.sizeToFit()
         self.orgMessageLabel.center.x = self.orgMessage.center.x
         
-        self.undoButton.frame = CGRect(x: 20, y: 1, width: 100, height: 30)
+        self.undoButton.frame = CGRect(x: 10, y: 1, width: 100, height: 30)
         self.undoButton.setTitle("< Back", for: [])
         self.undoButton.setTitleColor(#colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1), for: [])
         self.undoButton.center.y = self.optionLabel.center.y
@@ -258,6 +271,11 @@ class InitialOptionsViewController: UIViewController {
         default:
             print("okok")
         }
+    }
+    
+    @objc func joinOrg() {
+        let contactsVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "orgteam") as! OrgTeamRegistrationViewController
+        self.navigationController?.pushViewController(contactsVC, animated: true)
     }
     
     func showFour() {
@@ -329,13 +347,21 @@ class InitialOptionsViewController: UIViewController {
         switch sender.tag {
         case 9:
             contactsVC.filterType = "team"
+            contactsVC.startIndex = 0
         case 10:
             contactsVC.filterType = "org"
+            contactsVC.startIndex = 1
         default:
             contactsVC.filterType = ""
+            contactsVC.startIndex = 2
         }
 
         self.navigationController?.pushViewController(contactsVC, animated: true)
+    }
+    
+    @objc func goToCalls() {
+        let callsVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "allCallsView") as! CallTableViewController
+        self.navigationController?.pushViewController(callsVC, animated: true)
     }
     
 

@@ -35,7 +35,7 @@ class UsersTableViewController: UITableViewController, UISearchResultsUpdating, 
         searchController.dimsBackgroundDuringPresentation = false
         definesPresentationContext = true
         
-        loadUsers(filter: kTEAM)
+        loadUsers(filter: kTEAMS)
     }
     
     // MARK: - Table view data source
@@ -144,10 +144,10 @@ class UsersTableViewController: UITableViewController, UISearchResultsUpdating, 
         var query: Query!
         
         switch filter {
-        case kTEAM:
-            query = reference(.User).whereField(kTEAM, isEqualTo: FUser.currentUser()!.team).order(by: kFIRSTNAME, descending: false)
-        case kORGANIZATION:
-            query = reference(.User).whereField(kORGANIZATION, isEqualTo: FUser.currentUser()!.organization).order(by: kFIRSTNAME, descending: false)
+        case kTEAMS:
+            query = reference(.User).whereField(kTEAMS, isEqualTo: FUser.currentUser()!.teams).order(by: kFIRSTNAME, descending: false)
+        case kORGANIZATIONS:
+            query = reference(.User).whereField(kORGANIZATIONS, isEqualTo: FUser.currentUser()!.organizations).order(by: kFIRSTNAME, descending: false)
         default:
             query = reference(.User).order(by: kFIRSTNAME, descending: false)
         }
@@ -191,9 +191,9 @@ class UsersTableViewController: UITableViewController, UISearchResultsUpdating, 
         
         switch sender.selectedSegmentIndex {
         case 0:
-            loadUsers(filter: kTEAM)
+            loadUsers(filter: kTEAMS)
         case 1:
-            loadUsers(filter: kORGANIZATION)
+            loadUsers(filter: kORGANIZATIONS)
         case 2:
             loadUsers(filter: "")
         default:

@@ -25,13 +25,15 @@
 	<key>NSCameraUsageDescription</key>
 	<string>monTalk needs to use your camera to tkae a picture</string>
 	<key>NSContactsUsageDescription</key>
-	<string>monTalk needs to use your contacts to find contacts</string>
+	<string>monTalk needs to use your contacts to find which contacts are using monTalk</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>monTalk needs to use your location to share location</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>monTalk needs to use your microphone to transmit audio</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>monTalk needs to use your photo library to find photos</string>
+	<key>OneSignal_disable_badge_clearing</key>
+	<false/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -72,7 +74,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>OneSignal_disable_badge_clearing</key>
-	<false/>
 </dict>
 </plist>

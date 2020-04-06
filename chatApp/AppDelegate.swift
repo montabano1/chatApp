@@ -32,8 +32,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             let userId = note.userInfo![kUSERID] as! String
             UserDefaults.standard.set(userId, forKey: kUSERID)
             UserDefaults.standard.synchronize()
-            
-            print("User has logged in........")
             //userDidLogin(userId: userId)
             
         }
