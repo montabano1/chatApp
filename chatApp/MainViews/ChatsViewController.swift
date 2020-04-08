@@ -30,6 +30,8 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
         sentTexts = []
         loadRecentChats()
         tableView.tableFooterView = UIView()
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.backgroundColor = #colorLiteral(red: 0.9400385618, green: 0.9401959181, blue: 0.9400178194, alpha: 1)
     }
     override func viewWillDisappear(_ animated: Bool) {
         searchController.searchBar.text = ""
@@ -38,8 +40,7 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.backgroundColor = #colorLiteral(red: 0.9400385618, green: 0.9401959181, blue: 0.9400178194, alpha: 1)
+        
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
         searchController.searchResultsUpdater = self
@@ -57,7 +58,7 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! RecentChatTableViewCell
+        let cell = self.tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! RecentChatTableViewCell
         cell.delegate = self
         var recent: NSDictionary!
         
@@ -66,8 +67,12 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
         } else {
             recent = recentChats[indexPath.row]
         }
-        //print(recent)
         cell.generateCell(recentChat: recent, indexPath: indexPath)
+        if indexPath.row == 0 {
+            print()
+            print((recent[kAVATAR] as! String).prefix(4))
+            print(cell.avatarImage.image?.jpegData(compressionQuality: 0.5))
+        }
         return cell
     }
     
@@ -189,7 +194,9 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     @objc func groupButtonPressed() {
-        print("hello")
+        let groupVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "contactsView") as! ContactsTableViewController
+        groupVC.isGroup = true
+        self.navigationController?.pushViewController(groupVC, animated: true)
     }
     
     func didTapAvatarImage(indexPath: IndexPath) {
@@ -228,11 +235,12 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
         })
         if searchText.count >= 1 {
             for text in sentTexts {
+                
                 let message = Encryption.decryptText(chatRoomId: text["chatroomId"] as! String, encryptedMessage: text["text"] as! String).lowercased()
                 if message.contains(searchText.lowercased()) {
                     let tempChat = NSMutableDictionary()
                     tempChat["chatRoomID"] = text["chatroomId"]
-                    tempChat["avatar"] = ""
+                    tempChat["avatar"] = text["avatar"]
                     tempChat["counter"] = 0
                     tempChat["date"] = text["date"]
                     tempChat["members"] = text["receivers"]
@@ -244,13 +252,6 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
                         if users != FUser.currentId() {
                             tempChat["withUserFullName"] = usersNames[users]
                             tempChat["withUserUserID"] = users
-                            var avatar = imageFromInitials(firstName: usersNames[users]?.components(separatedBy:  " ")[0] as! String, lastName: usersNames[users]?.components(separatedBy:  " ")[1] as! String) { (avatarInitials) in
-                                
-                                let avatarIMG = avatarInitials.jpegData(compressionQuality: 0.7)
-                                let avatar = avatarIMG?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
-                                
-                                tempChat["avatar"] = avatar
-                            }
                         }
                     }
                     tempChat["lastMessage"] = text["text"]
@@ -259,7 +260,7 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 }
             }
         }
-        tableView.reloadData()
+        self.tableView.reloadData()
     }
     
     func updateSearchResults(for searchController: UISearchController) {

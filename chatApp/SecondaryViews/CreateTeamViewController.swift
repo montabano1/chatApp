@@ -97,7 +97,7 @@ class CreateTeamViewController: UIViewController {
         sNeedOrgLabel.sizeToFit()
         sNeedOrgLabel.textAlignment = .center
         view.addSubview(sNeedOrgLabel)
-        sNeedOrg.frame = CGRect(x: view.bounds.width - 100, y: 1, width: 90, height: 40)
+        sNeedOrg.frame = CGRect(x: sNeedOrg.frame.maxX + 10, y: 1, width: 90, height: 40)
         sNeedOrg.center.y = sNeedOrgLabel.center.y
         view.addSubview(sNeedOrg)
         
@@ -106,7 +106,7 @@ class CreateTeamViewController: UIViewController {
         sPrivateLabel.font = UIFont.systemFont(ofSize: 25)
         sPrivateLabel.sizeToFit()
         view.addSubview(sPrivateLabel)
-        sPrivateSwitch.frame = CGRect(x: view.bounds.width - 100, y: 1, width: 90, height: 40)
+        sPrivateSwitch.frame = CGRect(x: sPrivateLabel.frame.maxX + 10, y: 1, width: 90, height: 40)
         sPrivateSwitch.center.y = sPrivateLabel.center.y
         sPrivateSwitch.addTarget(self, action: #selector(togglePW), for: .touchUpInside)
         view.addSubview(sPrivateSwitch)

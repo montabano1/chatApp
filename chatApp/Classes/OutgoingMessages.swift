@@ -43,7 +43,7 @@ class OutgoingMessage {
             reference(.Message).document(memberId).collection(chatRoomId).document(messageId).setData(messageDictionary as! [String : Any])
         }
         if messageDictionary[kTYPE] as! String == kTEXT {
-            reference(.Text).document(messageId).setData(["sender": FUser.currentId(), "receivers": memberIds, "text" : messageDictionary[kMESSAGE], "chatroomId" : chatRoomId, "date" : dateFormatter().string(from: Date()), "messageId": messageId])
+            reference(.Text).document(messageId).setData(["sender": FUser.currentId(), "receivers": memberIds, "text" : messageDictionary[kMESSAGE], "chatroomId" : chatRoomId, "date" : dateFormatter().string(from: Date()), "messageId": messageId, "avatar": FUser.currentUser()?.avatar])
         }
         
         updateRecents(chatRoomId: chatRoomId, lastMessage: messageDictionary[kMESSAGE] as! String)
@@ -52,7 +52,8 @@ class OutgoingMessage {
         let pushText = Encryption.decryptText(chatRoomId: chatRoomId, encryptedMessage: (messageDictionary[kMESSAGE] as! String))
             
         
-        sendPushNotification(membersToPush: membersToPush, message: pushText)
+        //sendPushNotification(membersToPush: membersToPush, message: pushText)
+        sendNotification(message: pushText, chatroomId: chatRoomId, members: membersToPush)
     }
     
     class func deleteMessage(withId: String, chatRoomId: String) {

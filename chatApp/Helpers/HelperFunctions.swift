@@ -115,6 +115,10 @@ func formatCallTime(date: Date) -> String {
     return elapsed!
 }
 
+func goToChat(chatroomId: String) {
+    
+}
+
 
 
 
@@ -158,6 +162,22 @@ extension UIImage {
         UIGraphicsEndImageContext()
         
         return scaledImage!
+    }
+}
+
+
+func realNotification() {
+    if let url = URL(string: "https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send") {
+        var request = URLRequest(url: url)
+        request.allHTTPHeaderFields = ["Content-Type":"application/json", "Authorization":"Bearer AAAAqAh5jyU:APA91bGO9lbRUgqXn6gfktOVLkq3_eylNQJt5LLZHV8NzKbyypG1USfpOLf34w1pVtG0hUXU1hwVu_8cb9YVGos7EV-z3FgFKWaE9-1TnGMSzxwk3-i7PB_OtdgG-HU4CCE9ueyVQ3EU"]
+        request.httpMethod = "POST"
+        request.httpBody = "{\"message\": {\"topic\":\"news\",\"notification\": {\"title\": \"Breaking News\",\"body\": \"New news story available.\"},\"data\": {\"story_id\": \"story_12345\"}}}".data(using: .utf8)
+        URLSession.shared.dataTask(with: request) { (data, urlresponse, error) in
+            if error != nil {
+                print(error!)
+            }
+            print(String(data: data!, encoding: .utf8))
+        }.resume()
     }
 }
 
@@ -210,6 +230,8 @@ extension UIImage {
         }
         return nil
     }
+    
+    
 }
 
 

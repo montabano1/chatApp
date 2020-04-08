@@ -10,46 +10,83 @@ import UIKit
 import Firebase
 import CoreLocation
 import OneSignal
+import UserNotificationsUI
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
     
     var locationManager: CLLocationManager?
     var coordinates: CLLocationCoordinate2D?
-    
-    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         FirebaseApp.configure()
         
-//        func userDidLogin(userId: String) {
-//            self.startOneSignal()
-//        }
+        //        func userDidLogin(userId: String) {
+        //            self.startOneSignal()
+        //        }
         
         NotificationCenter.default.addObserver(forName: NSNotification.Name(USER_DID_LOGIN_NOTIFICATION), object: nil, queue: nil) { (note) in
             let userId = note.userInfo![kUSERID] as! String
             UserDefaults.standard.set(userId, forKey: kUSERID)
             UserDefaults.standard.synchronize()
             //userDidLogin(userId: userId)
-            
         }
         
-        let onesignalInitSettings = [kOSSettingsKeyAutoPrompt: false]
-
-        OneSignal.initWithLaunchOptions(launchOptions,
-        appId: kONESIGNALAPPID,
-        handleNotificationAction: nil,
-        settings: onesignalInitSettings)
-
-        OneSignal.inFocusDisplayType = OSNotificationDisplayType.notification;
-
-        // Recommend moving the below line to prompt for push after informing the user about
-        //   how your app will use them.
-        OneSignal.promptForPushNotifications(userResponse: { accepted in
-        print("User accepted notifications: \(accepted)")
-        })
+        
+        // For iOS 10 display notification (sent via APNS)
+        UNUserNotificationCenter.current().delegate = self
+        
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(
+            options: authOptions,
+            completionHandler: {_, _ in })
+        
+        
+        application.registerForRemoteNotifications()
+        
+        Messaging.messaging().delegate = self
+        
+        var pushToken: String?
+        InstanceID.instanceID().instanceID { (result, error) in
+            if let error = error {
+                print("Error fetching remote instance ID: \(error)")
+            } else if let result = result {
+                pushToken = result.token
+                print(pushToken!)
+                if pushToken != nil {
+                    if let playerId = pushToken {
+                        UserDefaults.standard.set(playerId, forKey: kPUSHID)
+                        updateCurrentUserInFirestore(withValues: [kPUSHID : pushToken]) { (error) in
+                            if error != nil {
+                                print("error updating push id \(error!.localizedDescription)")
+                            }
+                        }
+                    } else {
+                        UserDefaults.standard.removeObject(forKey: kPUSHID)
+                    }
+                    UserDefaults.standard.synchronize()
+                }
+            }
+        }
+        
+        
+        
+        //        let onesignalInitSettings = [kOSSettingsKeyAutoPrompt: false]
+        //
+        //        OneSignal.initWithLaunchOptions(launchOptions,
+        //        appId: kONESIGNALAPPID,
+        //        handleNotificationAction: nil,
+        //        settings: onesignalInitSettings)
+        //
+        //        OneSignal.inFocusDisplayType = OSNotificationDisplayType.notification;
+        //
+        //        // Recommend moving the below line to prompt for push after informing the user about
+        //        //   how your app will use them.
+        //        OneSignal.promptForPushNotifications(userResponse: { accepted in
+        //        print("User accepted notifications: \(accepted)")
+        //        })
         return true
     }
     
@@ -99,6 +136,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
     }
     
+   
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+      withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+      let userInfo = notification.request.content.userInfo
+
+      // Print chatroom ID.
+      if let messageID = userInfo["chatroom_id"] {
+        print("Message ID: \(messageID)")
+      }
+
+    
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        print("Handle push from background or closed")
+        // if you set a member variable in didReceiveRemoteNotification, you  will know if this is from closed or background
+        print("\(response.notification.request.content.userInfo["chatroom_id"])")
+    }
+    
+    
+    
+    
+    
     func locationManagerStop() {
         if locationManager != nil {
             locationManager!.stopUpdatingLocation()
@@ -130,22 +192,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         coordinates = locations.last!.coordinate
     }
     
-    func startOneSignal() {
-        let status : OSPermissionSubscriptionState = OneSignal.getPermissionSubscriptionState()
-        let userID = status.subscriptionStatus.userId
-        let pushToken = status.subscriptionStatus.pushToken
-        
-        if pushToken != nil {
-            if let playerId = userID {
-                UserDefaults.standard.set(playerId, forKey: kPUSHID)
-            } else {
-                UserDefaults.standard.removeObject(forKey: kPUSHID)
-            }
-            UserDefaults.standard.synchronize()
-        }
-        
-        updateOneSignalId()
-    }
+    //    func startOneSignal() {
+    //        let status : OSPermissionSubscriptionState = OneSignal.getPermissionSubscriptionState()
+    //        let userID = status.subscriptionStatus.userId
+    //        let pushToken = status.subscriptionStatus.pushToken
+    //
+    //        if pushToken != nil {
+    //            if let playerId = userID {
+    //                UserDefaults.standard.set(playerId, forKey: kPUSHID)
+    //            } else {
+    //                UserDefaults.standard.removeObject(forKey: kPUSHID)
+    //            }
+    //            UserDefaults.standard.synchronize()
+    //        }
+    //
+    //        updateOneSignalId()
+    //    }
     
 }
+
+
 

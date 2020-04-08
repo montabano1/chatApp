@@ -70,7 +70,7 @@ class OrgTeamRegistrationViewController: UIViewController, UITextFieldDelegate {
         let tapGestureRegognizer = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
         view.addGestureRecognizer(tapGestureRegognizer)
         
-        
+        navigationController?.navigationBar.prefersLargeTitles = true
         
         fourButtons = [joinOrgButton, startOrgButton, joinTeamButton, startTeamButton ]
         fourLabels = [joinOrgLabel, startOrgLabel, startTeamLabel, joinTeamLabel]
@@ -101,7 +101,7 @@ class OrgTeamRegistrationViewController: UIViewController, UITextFieldDelegate {
         joinOrgButton.center.y = view.center.y / 2
         joinOrgButton.addTarget(self, action: #selector(joinOrganization), for: .touchUpInside)
         view.addSubview(joinOrgButton)
-        joinOrgLabel.frame = CGRect(x: joinOrgButton.frame.minX, y: joinOrgButton.frame.maxY + 5, width: width/4, height: 30)
+        joinOrgLabel.frame = CGRect(x: joinOrgButton.frame.minX, y: joinOrgButton.frame.maxY + 5, width: width, height: 30)
         joinOrgLabel.text = "Join an \n organization"
         joinOrgLabel.numberOfLines = 2
         joinOrgLabel.textAlignment = .center
@@ -116,7 +116,7 @@ class OrgTeamRegistrationViewController: UIViewController, UITextFieldDelegate {
         startOrgButton.center.y = view.center.y / 2
         startOrgButton.addTarget(self, action: #selector(startOrganization), for: .touchUpInside)
         view.addSubview(startOrgButton)
-        startOrgLabel.frame = CGRect(x: startOrgButton.frame.minX, y: startOrgButton.frame.maxY + 5, width: width/4, height: 30)
+        startOrgLabel.frame = CGRect(x: startOrgButton.frame.minX, y: startOrgButton.frame.maxY + 5, width: width, height: 30)
         startOrgLabel.text = "Create an \n organization"
         startOrgLabel.numberOfLines = 2
         startOrgLabel.textAlignment = .center
@@ -257,7 +257,7 @@ class OrgTeamRegistrationViewController: UIViewController, UITextFieldDelegate {
         sPrivateLabel.font = UIFont.systemFont(ofSize: 25)
         sPrivateLabel.sizeToFit()
         view.addSubview(sPrivateLabel)
-        sPrivateSwitch.frame = CGRect(x: view.bounds.width - 100, y: 1, width: 90, height: 40)
+        sPrivateSwitch.frame = CGRect(x: sPrivateLabel.frame.maxX + 10, y: 1, width: 90, height: 40)
         sPrivateSwitch.center.y = sPrivateLabel.center.y
         sPrivateSwitch.addTarget(self, action: #selector(togglePW), for: .touchUpInside)
         view.addSubview(sPrivateSwitch)

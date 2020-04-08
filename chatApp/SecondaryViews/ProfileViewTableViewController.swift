@@ -44,6 +44,14 @@ class ProfileViewTableViewController: UITableViewController {
         let call = CallClass(_callerId: currentUser.objectId, _withUserId: user!.objectId, _callerFullName: currentUser.fullname, _withUserFullName: user!.fullname)
         call.saveCallInBackground()
         callButtonOutlet.isEnabled = false
+        let busPhone = phoneNumberLabel.text!
+        if let url = URL(string: "tel://\(busPhone)"), UIApplication.shared.canOpenURL(url) {
+            if #available(iOS 10, *) {
+                UIApplication.shared.open(url)
+            } else {
+                UIApplication.shared.openURL(url)
+            }
+        }
     }
     
     @IBAction func chatButtonPressed(_ sender: Any) {
@@ -130,6 +138,12 @@ class ProfileViewTableViewController: UITableViewController {
             for team in user!.teams {
                 teamNameLabel.text! += "\(team)\n"
             }
+            if teamNameLabel.text == "" {
+                teamNameLabel.text = "None"
+            }
+            if orgNameLabel.text == "" {
+                orgNameLabel.text = "None"
+            }
             orgNameLabel.numberOfLines = 0
             orgNameLabel.sizeToFit()
             teamNameLabel.numberOfLines = 0
@@ -149,10 +163,10 @@ class ProfileViewTableViewController: UITableViewController {
             return 100
         }
         if indexPath.section == 1 && indexPath.row == 1 {
-            return max(CGFloat((user?.organizations.count)! * 40),40)
+            return max(CGFloat((user?.organizations.count)! * 40),60)
         }
         if indexPath.section == 1 && indexPath.row == 2 {
-            return max(30,CGFloat((user?.teams.count)! * 40))
+            return max(60,CGFloat((user?.teams.count)! * 40))
         }
         if indexPath.section == 1 && indexPath.row == 0 {
             return 75

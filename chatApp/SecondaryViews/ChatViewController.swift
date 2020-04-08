@@ -19,7 +19,6 @@ import SKPhotoBrowser
 class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, IQAudioRecorderViewControllerDelegate {
     
     let appDelegate = UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate
-    
     var chatroomId: String!
     var memberIds: [String]!
     var membersToPush: [String]!
@@ -84,23 +83,20 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     
     override func viewDidLayoutSubviews() {
         perform(Selector(("jsq_updateCollectionViewInsets")))
-        
+        scrollToBottom(animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         clearRecentCounter(chatRoomId: chatroomId)
-        print("appearing1.........")
+        
     }
     override func viewWillDisappear(_ animated: Bool) {
         clearRecentCounter(chatRoomId: chatroomId)
-        print("appearing2.........")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("appearing3.........")
         createTypingObserver()
-        
         JSQMessagesCollectionViewCell.registerMenuAction(#selector(delete))
         
         navigationItem.largeTitleDisplayMode = .never
@@ -120,8 +116,10 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         
         loadMessages()
         
+        
+        
         self.senderId = FUser.currentId()
-        self.senderDisplayName = FUser.currentUser()?.firstname
+        self.senderDisplayName = FUser.currentUser()?.fullname
         
         let constraint = perform(Selector(("toolbarBottomLayoutGuide")))?.takeUnretainedValue() as! NSLayoutConstraint
         
@@ -500,7 +498,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         
         if let text = text {
             let encryptedText = Encryption.encryptText(chatRoomId: chatroomId, message: text)
-            outgoingMessage = OutgoingMessage(message: encryptedText, senderId: currentUser.objectId, senderName: currentUser.firstname, date: date, status: kDELIVERED, type: kTEXT)
+            outgoingMessage = OutgoingMessage(message: encryptedText, senderId: currentUser.objectId, senderName: currentUser.fullname, date: date, status: kDELIVERED, type: kTEXT)
         }
         
         if let pic = picture {
@@ -509,7 +507,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
                     
                     let encryptedText = Encryption.encryptText(chatRoomId: self.chatroomId, message: "[\(kPICTURE)]")
                     
-                    outgoingMessage = OutgoingMessage(message: encryptedText, pictureLink: imageLink!, senderId: currentUser.objectId, senderName: currentUser.firstname, date: date, status: kDELIVERED, type: kPICTURE)
+                    outgoingMessage = OutgoingMessage(message: encryptedText, pictureLink: imageLink!, senderId: currentUser.objectId, senderName: currentUser.fullname, date: date, status: kDELIVERED, type: kPICTURE)
                     
                     JSQSystemSoundPlayer.jsq_playMessageSentSound()
                     self.finishSendingMessage()
@@ -529,7 +527,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
             uploadVideo(video: videoData!, chatRoomId: chatroomId, view: self.navigationController!.view) { (videoLink) in
                 if videoLink != nil {
                     let encryptedText = Encryption.encryptText(chatRoomId: self.chatroomId, message: "[\(kVIDEO)]")
-                    outgoingMessage = OutgoingMessage(message: encryptedText, video: videoLink!, thumbnail: datathumbNail! as NSData, senderId: currentUser.objectId, senderName: currentUser.firstname, date: date, status: kDELIVERED, type: kVIDEO)
+                    outgoingMessage = OutgoingMessage(message: encryptedText, video: videoLink!, thumbnail: datathumbNail! as NSData, senderId: currentUser.objectId, senderName: currentUser.fullname, date: date, status: kDELIVERED, type: kVIDEO)
                     
                     JSQSystemSoundPlayer.jsq_playMessageSentSound()
                     self.finishSendingMessage()
@@ -546,7 +544,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
             uploadAudio(autioPath: audioPath, chatRoomId: chatroomId, view: self.navigationController!.view) { (audioLink) in
                 if audioLink != nil {
                     let encryptedText = Encryption.encryptText(chatRoomId: self.chatroomId, message: "[\(kPICTURE)]")
-                    outgoingMessage = OutgoingMessage(message: encryptedText, audio: audioLink!, senderId: currentUser.objectId, senderName: currentUser.firstname, date: date, status: kDELIVERED, type: kAUDIO)
+                    outgoingMessage = OutgoingMessage(message: encryptedText, audio: audioLink!, senderId: currentUser.objectId, senderName: currentUser.fullname, date: date, status: kDELIVERED, type: kAUDIO)
                     JSQSystemSoundPlayer.jsq_playMessageSentSound()
                     self.finishSendingMessage()
                     
@@ -565,7 +563,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
             
             let encryptedText = Encryption.encryptText(chatRoomId: self.chatroomId, message: "[\(kPICTURE)]")
             
-            outgoingMessage = OutgoingMessage(message: encryptedText, latitude: lat, longitude: long, senderId: currentUser.objectId, senderName: currentUser.firstname, date: date, status: kDELIVERED, type: kLOCATION)
+            outgoingMessage = OutgoingMessage(message: encryptedText, latitude: lat, longitude: long, senderId: currentUser.objectId, senderName: currentUser.fullname, date: date, status: kDELIVERED, type: kLOCATION)
             
         }
         
@@ -730,9 +728,15 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     }
     
     @objc func backAction() {
-        clearRecentCounter(chatRoomId: chatroomId)
-        removeListeners()
-        self.navigationController?.popViewController(animated: true)
+        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
+        
+        let window = self.view.window
+        window?.rootViewController = mainView
+        UIView.transition(with: window!,
+                          duration: 0.3,
+                          options: .transitionCrossDissolve,
+                          animations: nil,
+                          completion: nil)
     }
     
     @objc func infoButtonPressed() {
@@ -1021,21 +1025,21 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
 }
 
 extension JSQMessagesInputToolbar {
-    
+
     override open func didMoveToWindow() {
-        
+
         super.didMoveToWindow()
-        
+
         guard let window = window else { return }
-        
+
         if #available(iOS 11.0, *) {
-            
+
             let anchor = window.safeAreaLayoutGuide.bottomAnchor
-            
+
             bottomAnchor.constraint(lessThanOrEqualToSystemSpacingBelow: anchor, multiplier: 1.0).isActive = true
-            
+
         }
-        
+
     }
-    
+
 }

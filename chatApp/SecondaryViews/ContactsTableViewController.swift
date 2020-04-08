@@ -24,6 +24,7 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
     var addedLabels: [UILabel] = []
     
     var isGroup = false
+    var isCall = false
     var filterType = ""
     var memberIdsOfGroupChat: [String] = []
     var membersOfGroupChat: [FUser] = []
@@ -172,11 +173,7 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
             let users = self.allUsersGrouped[sectionTitle]
             user = users![indexPath.row]
         }
-        if checkedUsers.contains(user.objectId) {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
+        
         cell.delegate = self
         
         switch filterType {
@@ -222,6 +219,12 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
             cell.accessoryType = .none
         }
         
+        if checkedUsers.contains(user.objectId) {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
+        
         switch startIndex {
         case 0:
             var showMe = false
@@ -238,9 +241,9 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
                 teamName.text = "" + teamText
                 cell.addSubview(teamName)
                 addedLabels.append(teamName)
-                teamName.frame = CGRect(x: cell.frame.width , y: 75, width: 100, height: 25)
-                teamName.sizeToFit()
-                teamName.center.x -= (teamName.frame.width + 10)
+                teamName.frame = CGRect(x: 80 , y: 75, width: tableView.frame.width - 100, height: 25)
+                teamName.textAlignment = .right
+                teamName.adjustsFontSizeToFitWidth = true
             }
         case 1:
             var showMe = false
@@ -257,38 +260,12 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
                 teamName.text = "" + orgText
                 cell.addSubview(teamName)
                 addedLabels.append(teamName)
-                teamName.frame = CGRect(x: cell.frame.width , y: 75, width: 100, height: 25)
-                teamName.sizeToFit()
-                teamName.center.x -= (teamName.frame.width + 10)
+                teamName.frame = CGRect(x: 80 , y: 75, width: tableView.frame.width - 100, height: 25)
+                teamName.textAlignment = .right
+                teamName.adjustsFontSizeToFitWidth = true
             }
         default:
-            var showMe = false
-            var teamText = ""
-            let myTeams = FUser.currentUser()?.teams
-            let myOrgs = FUser.currentUser()?.organizations
-            for team in user.teams {
-                if (myTeams?.contains(team))! {
-                    showMe = true
-                    teamText += " " + team
-                }
-            }
-            if !showMe {
-                for org in user.organizations {
-                    if (myOrgs?.contains(org))! {
-                        showMe = true
-                        teamText += " " + org
-                    }
-                }
-            }
-            if showMe {
-                let teamName = UILabel()
-                teamName.text = "" + teamText
-                cell.addSubview(teamName)
-                addedLabels.append(teamName)
-                teamName.frame = CGRect(x: cell.frame.width , y: 75, width: 100, height: 25)
-                teamName.sizeToFit()
-                teamName.center.x -= (teamName.frame.width + 10)
-            }
+            true
         }
         cell.generateCellWith(fUser: user, indexPath: indexPath)
         participantsLabel.text = "PARTICIPANTS: \(membersOfGroupChat.count)"
@@ -325,7 +302,7 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
             let users = self.allUsersGrouped[sectionTitle]
             userToChat = users![indexPath.row]
         }
-        if !isGroup {
+        if !isGroup && !isCall {
             if !checkBlockedStatus(withUser: userToChat) {
                 let chatVC = ChatViewController()
                 chatVC.titleName = userToChat.firstname
@@ -338,6 +315,9 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
             } else {
                 ProgressHUD.showError("This user is not available for chat")
             }
+        } else if !isGroup && isCall{
+            let busPhone = userToChat.phoneNumber
+            makeCall(busPhone: busPhone)
         } else {
             if let cell = tableView.cellForRow(at: indexPath) {
                 if cell.accessoryType == .checkmark {
@@ -362,6 +342,16 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
             self.navigationItem.rightBarButtonItem?.isEnabled = memberIdsOfGroupChat.count > 0
         }
         
+    }
+    
+    func makeCall(busPhone: String) {
+        if let url = URL(string: "tel://\(busPhone)"), UIApplication.shared.canOpenURL(url) {
+            if #available(iOS 10, *) {
+                UIApplication.shared.open(url)
+            } else {
+                UIApplication.shared.openURL(url)
+            }
+        }
     }
     
     @objc func inviteButtonPressed() {
@@ -425,6 +415,7 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
                             matchedUsers.append(user)
                             matchedUserIds.append(user.objectId)
                         }
+                        self.tableView.reloadData()
                         continue
                     }
                 }
@@ -439,14 +430,17 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
                             matchedUsers.append(user)
                             matchedUserIds.append(user.objectId)
                         }
+                        self.tableView.reloadData()
                         continue
                     }
+                    
                 }
                 if (contacts?.contains(user.objectId))! {
                         if !matchedUserIds.contains(user.objectId) {
                             matchedUsers.append(user)
                             matchedUserIds.append(user.objectId)
                         }
+                        self.tableView.reloadData()
                         continue
                 }
                 self.tableView.reloadData()
@@ -473,6 +467,7 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
                 for team in user.teams {
                     let myTeams = FUser.currentUser()?.teams
                     if (myTeams?.contains(team))! {
+                        
                         if !(contacts?.contains(user.objectId))! {
                             contacts?.append(user.objectId)
                         }
@@ -482,6 +477,7 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
                             matchedUserIds.append(user.objectId)
                         }
                     }
+                    self.tableView.reloadData()
                 }
                 self.tableView.reloadData()
             }
@@ -520,24 +516,22 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
     }
     
     
-    fileprivate func splitDataInToSection() {
+    func splitDataInToSection() {
         allUsersGrouped.removeAll()
         sectionTitleList = []
         var sectionTitle: String = ""
-        for i in 0..<self.matchedUsers.count {
-            let currentUser = self.matchedUsers[i]
+        for currentUser in matchedUsers {
             let firstChar = currentUser.firstname.first!.uppercased()
             let firstCharString = "\(firstChar)"
-            if firstCharString != sectionTitle {
-                sectionTitle = firstCharString
-                self.allUsersGrouped[sectionTitle] = []
-                if !sectionTitleList.contains(sectionTitle) {
-                    self.sectionTitleList.append(sectionTitle)
-                }
-                sectionTitleList = sectionTitleList.sorted()
+            if !sectionTitleList.contains(firstCharString) {
+                sectionTitleList.append(firstCharString)
+                allUsersGrouped[firstCharString] = [currentUser]
+            } else {
+                allUsersGrouped[firstCharString]?.append(currentUser)
             }
-            self.allUsersGrouped[firstCharString]?.append(currentUser)
+            sectionTitleList = sectionTitleList.sorted()
         }
+        
         participantsLabel.text = "PARTICIPANTS: \(membersOfGroupChat.count)"
         tableView.reloadData()
     }

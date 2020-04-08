@@ -163,8 +163,13 @@ class FUser {
     //MARK: Returning current user funcs
     
     class func currentId() -> String {
-        
-        return Auth.auth().currentUser!.uid
+        if Auth.auth().currentUser != nil {
+            
+            return Auth.auth().currentUser!.uid
+            
+        } else {
+            return ""
+        }
     }
     
     class func currentUser () -> FUser? {

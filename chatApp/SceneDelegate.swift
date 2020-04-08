@@ -126,6 +126,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
 
         self.window?.rootViewController = mainView
     }
+    
 
     
 

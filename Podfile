@@ -5,6 +5,7 @@ target 'monTalk' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
+pod 'Firebase/Messaging'
 pod 'Firebase/Database'
 pod 'Firebase/Core'
 pod 'Firebase/Database'
@@ -22,7 +23,7 @@ pod 'ChromaColorPicker'
 pod 'ImagePicker'
 pod 'OneSignal', '>= 2.11.2', '< 3.0'
 pod "SearchTextField"
-
+pod 'SinchRTC'
 
   # Pods for chatApp
 

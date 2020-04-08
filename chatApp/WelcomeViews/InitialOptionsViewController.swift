@@ -123,7 +123,7 @@ class InitialOptionsViewController: UIViewController {
         titleLabel.sizeToFit()
         titleLabel.center.x = view.center.x
         view.addSubview(titleLabel)
-        optionLabel.frame = CGRect(x: 0, y: titleLabel.frame.maxY + 50, width: width, height: width)
+        optionLabel.frame = CGRect(x: 0, y: titleLabel.frame.maxY + 35, width: width, height: width)
         optionLabel.text = "Text Message"
         optionLabel.font = UIFont.systemFont(ofSize: 30)
         optionLabel.alpha = 0
