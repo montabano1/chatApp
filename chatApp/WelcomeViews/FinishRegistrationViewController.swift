@@ -8,6 +8,7 @@
 
 import UIKit
 import ProgressHUD
+import Firebase
 
 class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -32,7 +33,7 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
     var termsSwitch = UISwitch()
     var termsButton = UIButton()
     var avatarImage: UIImage?
-    
+    var pushToken = ""
     var width: Double = 0
     var height: Double = 0
     
@@ -51,6 +52,7 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
         super.viewDidLoad()
         
         print(email, password)
+        setPushId()
         width = Double(view.bounds.width)
         height = Double(view.bounds.height)
         titleView.frame = CGRect(x: 0, y: 0, width: width, height: height * 0.15)
@@ -102,6 +104,7 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
         firstNameTextField.setLeftPaddingPoints(10)
         firstNameTextField.keyboardType = .namePhonePad
         firstNameTextField.autocorrectionType = .no
+        firstNameTextField.autocapitalizationType = .sentences
         view.addSubview(firstNameTextField)
         
         lastNameTextField.frame = CGRect(x: Double(avatarImageView.frame.maxX) + 40, y: Double(firstNameTextField.frame.maxY + 20), width: Double(width / 2), height: 40)
@@ -111,6 +114,7 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
         lastNameTextField.setLeftPaddingPoints(10)
         lastNameTextField.keyboardType = .namePhonePad
         lastNameTextField.autocorrectionType = .no
+        lastNameTextField.autocapitalizationType = .sentences
         view.addSubview(lastNameTextField)
         
         choosePictureButton.frame = CGRect(x: 0, y: Double(avatarImageView.frame.maxY + 5), width: width / 4, height: 20)
@@ -197,7 +201,7 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
             ProgressHUD.show("Registering...")
             
             if firstNameTextField.text != "" && lastNameTextField.text != "" && phoneNumberTextField.text != ""  {
-                FUser.registerUserWith(email: email!, password: password!, firstName: firstNameTextField.text!, lastName: lastNameTextField.text!) { (error) in
+                FUser.registerUserWith(email: email!, password: password!, firstName: firstNameTextField.text!, lastName: lastNameTextField.text!, pushId: pushToken) { (error) in
                     if error != nil {
                         ProgressHUD.dismiss()
                         ProgressHUD.showError(error?.localizedDescription)
@@ -264,15 +268,15 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: USER_DID_LOGIN_NOTIFICATION), object: nil, userInfo: [kUSERID : FUser.currentId()])
         
-        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
+        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "tabBar") as! UITabBarController
         
         let window = self.view.window
         window?.rootViewController = mainView
         UIView.transition(with: window!,
-        duration: 0.3,
-        options: .transitionCrossDissolve,
-        animations: nil,
-        completion: nil)
+                          duration: 0.3,
+                          options: .transitionCrossDissolve,
+                          animations: nil,
+                          completion: nil)
     }
     
     func dismissKeyboard() {
@@ -312,11 +316,28 @@ class FinishRegistrationViewController: UIViewController, UITextFieldDelegate, U
     }
     
     @objc fileprivate func profileImageButtonTapped() {
-        print("Tapped button")
         showChooseSourceTypeAlertController()
     }
     
     @objc func joinOrg() {
         performSegue(withIdentifier: "joinOrg", sender: self)
+    }
+    
+    func setPushId() {
+        
+        InstanceID.instanceID().instanceID { (result, error) in
+            if let error = error {
+                print("Error fetching remote instance ID: \(error)")
+            } else if let result = result {
+                self.pushToken = result.token
+                if let playerId = self.pushToken as? String {
+                    UserDefaults.standard.set(playerId, forKey: kPUSHID)
+                } else {
+                    UserDefaults.standard.removeObject(forKey: kPUSHID)
+                }
+                UserDefaults.standard.synchronize()
+                
+            }
+        }
     }
 }

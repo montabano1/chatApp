@@ -15,13 +15,10 @@ class SettingsTableViewController: UITableViewController
     @IBOutlet weak var avatarImageView: UIImageView!
     @IBOutlet weak var fullNameLabel: UILabel!
     @IBOutlet weak var deleteButtonOutlet: UIButton!
-    @IBOutlet weak var avatarStatusSwitch: UISwitch!
-    
     @IBOutlet weak var versionLabel: UILabel!
     
     let userDefaults = UserDefaults.standard
     
-    var avatarSwitchStatus = false
     var firstLoad: Bool?
     
     override func viewDidAppear(_ animated: Bool) {
@@ -48,10 +45,9 @@ class SettingsTableViewController: UITableViewController
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         if section == 1 {
-            return 4
+            return 3
         }
         return 2
-        
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -70,12 +66,19 @@ class SettingsTableViewController: UITableViewController
     }
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-            let editVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "editVC") as! EditProfileTableViewController
-                self.navigationController?.pushViewController(editVC, animated: true)
+            presentUserProfile(forUser: FUser.currentUser()!)
         }
     }
     
+    func presentUserProfile(forUser: FUser) {
+        let profileVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "profileView") as! ProfileViewTableViewController
+        
+        profileVC.user = forUser
+            self.navigationController?.pushViewController(profileVC, animated: true)
+    }
+    
     @IBAction func cleanCacheButtonPressed(_ sender: Any) {
+        UIApplication.shared.applicationIconBadgeNumber = 0
         do {
             let files = try FileManager.default.contentsOfDirectory(atPath: getDocumentsURL().path)
             
@@ -86,10 +89,6 @@ class SettingsTableViewController: UITableViewController
         } catch {
             ProgressHUD.showError("Couldn't clean media files.")
         }
-    }
-    @IBAction func showAvatarSwitchValueChanged(_ sender: UISwitch) {
-        avatarSwitchStatus = sender.isOn
-        saveUserDefaults()
     }
     
     @IBAction func tellAFriendButtonPressed(_ sender: Any) {
@@ -139,8 +138,14 @@ class SettingsTableViewController: UITableViewController
     func showLoginView() {
         
         let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "welcome")
-        self.present(mainView, animated: true, completion: nil)
         
+        let window = self.view.window
+        window?.rootViewController = mainView
+        UIView.transition(with: window!,
+                          duration: 0.3,
+                          options: .transitionCrossDissolve,
+                          animations: nil,
+                          completion: nil)
     }
     
     func setupUI() {
@@ -177,21 +182,13 @@ class SettingsTableViewController: UITableViewController
         }
     }
     
-    func saveUserDefaults() {
-        userDefaults.set(avatarSwitchStatus, forKey: kSHOWAVATAR)
-        userDefaults.synchronize()
-    }
-    
     func loadUserDefaults() {
         firstLoad = userDefaults.bool(forKey: kFIRSTRUN)
         if !firstLoad! {
             userDefaults.set(true, forKey: kFIRSTRUN)
-            userDefaults.set(avatarSwitchStatus, forKey: kSHOWAVATAR)
             userDefaults.synchronize()
         }
         
-        avatarSwitchStatus = userDefaults.bool(forKey: kSHOWAVATAR)
-        avatarStatusSwitch.isOn = avatarSwitchStatus
     }
     
 }

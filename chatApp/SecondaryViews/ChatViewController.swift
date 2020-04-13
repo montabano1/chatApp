@@ -45,7 +45,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     var messages: [JSQMessage] = []
     var objectMessages: [NSDictionary] = []
     var loadedMessages: [NSDictionary] = []
-    var allPictureMessages: [String] = []
+    var allPictureMessages = [[Any]]()
     
     var initialLoadComplete = false
     
@@ -377,7 +377,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     }
     
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAt indexPath: IndexPath!) {
-        print("tap on message at \(indexPath)")
+
         
         let messageDictionary = objectMessages[indexPath.row]
         let messageType = messageDictionary[kTYPE] as! String
@@ -387,25 +387,22 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
             let message = messages[indexPath.row]
             print(message)
         case kPICTURE:
-            let message = messages[indexPath.row]
-            let mediaItem = message.media as! JSQPhotoMediaItem
-            let target = mediaItem.image as! UIImage
+            let idx = getPictureNumber(indexPath: indexPath)
             var allImages = [UIImage]()
             for imageLink in allPictureMessages {
-                downloadImage(imageUrl: imageLink) { (image) in
+                downloadImage(imageUrl: imageLink[0] as! String) { (image) in
                     if image != nil {
                         allImages.append(image!)
                     }
                 }
             }
-
-
+            
             var images = [SKPhoto]()
             for photo in allImages {
                 images.append(SKPhoto.photoWithImage(photo))
             }
             let browser = SKPhotoBrowser(photos: images)
-            browser.initializePageIndex(indexPath.row)
+            browser.initializePageIndex(idx)
             present(browser, animated: true, completion: {})
 
         case kLOCATION:
@@ -442,13 +439,27 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         }
     }
     
+    func getPictureNumber(indexPath: IndexPath) -> Int {
+        let index = allPictureMessages.count - 1
+        let message = messages[indexPath.row]
+        let date = message.date
+        var i = 0
+        while i < allPictureMessages.count {
+            if date == (allPictureMessages[i][1] as! Date) {
+                return i
+            }
+            i += 1
+        }
+        
+        return index
+    }
+    
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, at indexPath: IndexPath!) {
         let senderId = messages[indexPath.row].senderId
         var selectedUser: FUser?
         
         if senderId == FUser.currentId() {
-            let editVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "editVC") as! EditProfileTableViewController
-            self.navigationController?.pushViewController(editVC, animated: true)
+            presentUserProfile(forUser: FUser.currentUser()!)
         } else {
             for user in withUsers {
                 if user.objectId == senderId {
@@ -512,10 +523,11 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
                     JSQSystemSoundPlayer.jsq_playMessageSentSound()
                     self.finishSendingMessage()
                     
-                    outgoingMessage?.sendMessage(chatRoomId: self.chatroomId, messageDictionary: outgoingMessage!.messageDictionary, memberIds: self.memberIds, membersToPush: self.membersToPush)
+                    outgoingMessage?.sendMessage(chatRoomId: self.chatroomId, messageDictionary: outgoingMessage!.messageDictionary, memberIds: self.memberIds, membersToPush: self.membersToPush, title: self.titleName)
+                    
+                    self.allPictureMessages.append([imageLink!,date])
                 }
             }
-            
             
             return
         }
@@ -531,7 +543,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
                     
                     JSQSystemSoundPlayer.jsq_playMessageSentSound()
                     self.finishSendingMessage()
-                    outgoingMessage?.sendMessage(chatRoomId: self.chatroomId, messageDictionary: outgoingMessage!.messageDictionary, memberIds: self.memberIds, membersToPush: self.membersToPush)
+                    outgoingMessage?.sendMessage(chatRoomId: self.chatroomId, messageDictionary: outgoingMessage!.messageDictionary, memberIds: self.memberIds, membersToPush: self.membersToPush, title: self.titleName)
                 }
             }
             
@@ -548,7 +560,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
                     JSQSystemSoundPlayer.jsq_playMessageSentSound()
                     self.finishSendingMessage()
                     
-                    outgoingMessage!.sendMessage(chatRoomId: self.chatroomId, messageDictionary: outgoingMessage!.messageDictionary, memberIds: self.memberIds, membersToPush: self.membersToPush)
+                    outgoingMessage!.sendMessage(chatRoomId: self.chatroomId, messageDictionary: outgoingMessage!.messageDictionary, memberIds: self.memberIds, membersToPush: self.membersToPush, title: self.titleName)
                 }
             }
             return
@@ -569,8 +581,9 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
         self.finishSendingMessage()
-        
-        outgoingMessage!.sendMessage(chatRoomId: chatroomId, messageDictionary: outgoingMessage!.messageDictionary, memberIds: memberIds, membersToPush: membersToPush)
+        loadedMessagesCount += 1
+        loadedMessages.append(outgoingMessage!.messageDictionary)
+        outgoingMessage!.sendMessage(chatRoomId: chatroomId, messageDictionary: outgoingMessage!.messageDictionary, memberIds: memberIds, membersToPush: membersToPush, title: self.titleName)
     }
     
     func loadMessages() {
@@ -622,7 +635,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
                         if let type = item[kTYPE] {
                             if self.legitTypes.contains(type as! String) {
                                 if type as! String == kPICTURE {
-                                    self.addNewPictureMessageLink(link: item[kPICTURE] as! String)
+                                    self.addNewPictureMessageLink(link: item[kPICTURE] as! String, date: dateFormatter().date(from: item[kDATE] as! String)!)
                                 }
                                 if self.insertInitialLoadMessages(messageDictionary: item) {
                                     JSQSystemSoundPlayer.jsq_playMessageReceivedSound()
@@ -713,7 +726,6 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
             let messageDictionary = loadedMessages[i]
             insertNewMessage(messageDictionary: messageDictionary)
             loadedMessagesCount += 1
-            
         }
         
         loadOld = true
@@ -728,7 +740,9 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     }
     
     @objc func backAction() {
-        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
+        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "tabBar") as! UITabBarController
+        
+        mainView.selectedIndex = 1
         
         let window = self.view.window
         window?.rootViewController = mainView
@@ -741,8 +755,11 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
     
     @objc func infoButtonPressed() {
         let mediaVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "mediaView") as! PicturesCollectionViewController
-        
-        mediaVC.allImageLinks = allPictureMessages
+        var allImages = [String]()
+        for img in allPictureMessages {
+            allImages.append(img[0] as! String)
+        }
+        mediaVC.allImageLinks = allImages
         
         self.navigationController?.pushViewController(mediaVC, animated: true)
     }
@@ -866,7 +883,8 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
                 avatarButton.setImage(image!.circleMasked, for: .normal)
             }
         }
-        titleLabel.text = withUser.fullname
+        titleName = withUser.fullname
+        titleLabel.text = titleName
         if withUser.isOnline {
             subtitleLabel.text = "Online"
         } else {
@@ -955,8 +973,8 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         }
     }
     
-    func addNewPictureMessageLink(link: String) {
-        allPictureMessages.append(link)
+    func addNewPictureMessageLink(link: String, date: Date) {
+        allPictureMessages.append([link, date])
     }
     
     func getPictureMessages() {
@@ -964,7 +982,7 @@ class ChatViewController: JSQMessagesViewController, UIImagePickerControllerDele
         
         for message in loadedMessages {
             if message[kTYPE] as! String == kPICTURE {
-                allPictureMessages.append(message[kPICTURE] as! String)
+                allPictureMessages.append([message[kPICTURE] as! String, dateFormatter().date(from: message[kDATE] as! String)])
             }
         }
     }

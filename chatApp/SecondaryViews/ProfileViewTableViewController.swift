@@ -8,6 +8,7 @@
 
 import UIKit
 import ProgressHUD
+import SKPhotoBrowser
 
 class ProfileViewTableViewController: UITableViewController {
 
@@ -24,19 +25,42 @@ class ProfileViewTableViewController: UITableViewController {
     
     @IBOutlet weak var blockUserButton: UIButton!
     
+    @IBOutlet weak var reportUserButton: UIButton!
     
     @IBOutlet weak var avatarImageView: UIImageView!
     
     @IBOutlet weak var teamNameLabel: UILabel!
     @IBOutlet weak var orgNameLabel: UILabel!
     
+    var editButton = UIBarButtonItem()
+    
     var user: FUser?
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Got here!")
+        editButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(self.editProfile))
+        self.navigationItem.rightBarButtonItem = editButton
         setupUI()
+        
+        
+    }
+    
+    @objc func showProfileImage() {
+        print("tapped")
+        var images = [SKPhoto]()
+        let allImages = [avatarImageView.image!]
+        for photo in allImages {
+            images.append(SKPhoto.photoWithImage(photo))
+        }
+        let browser = SKPhotoBrowser(photos: images)
+        browser.initializePageIndex(0)
+        present(browser, animated: true, completion: {})
+    }
+    
+    @objc func editProfile() {
+        let editVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "editVC") as! EditProfileTableViewController
+        self.navigationController?.pushViewController(editVC, animated: true)
     }
 
     @IBAction func callButtonPressed(_ sender: Any) {
@@ -96,6 +120,9 @@ class ProfileViewTableViewController: UITableViewController {
         
     }
     override func numberOfSections(in tableView: UITableView) -> Int {
+        if user?.objectId == FUser.currentId() {
+            return 2
+        }
         return 3
     }
 
@@ -153,6 +180,9 @@ class ProfileViewTableViewController: UITableViewController {
             imageFromData(pictureData: user!.avatar) { (avatarImage) in
                 if avatarImage != nil {
                     self.avatarImageView.image = avatarImage!.circleMasked
+                    let tapper = UITapGestureRecognizer(target: self, action: #selector(showProfileImage))
+                    avatarImageView.addGestureRecognizer(tapper)
+                    avatarImageView.isUserInteractionEnabled = true
                 }
             }
         }
@@ -163,10 +193,10 @@ class ProfileViewTableViewController: UITableViewController {
             return 100
         }
         if indexPath.section == 1 && indexPath.row == 1 {
-            return max(CGFloat((user?.organizations.count)! * 40),60)
+            return max(CGFloat((user?.organizations.count)! * 60),60)
         }
         if indexPath.section == 1 && indexPath.row == 2 {
-            return max(60,CGFloat((user?.teams.count)! * 40))
+            return max(60,CGFloat((user?.teams.count)! * 60))
         }
         if indexPath.section == 1 && indexPath.row == 0 {
             return 75
@@ -178,12 +208,16 @@ class ProfileViewTableViewController: UITableViewController {
     func updateBlockStatus() {
         if user!.objectId != FUser.currentId() {
             blockUserButton.isHidden = false
-            messageButtonOutlet.isHidden = false
-            callButtonOutlet.isHidden = false
+            reportUserButton.isHidden = false
+            messageButtonOutlet.isEnabled = true
+            callButtonOutlet.isEnabled = true
+            self.navigationItem.rightBarButtonItems?.removeAll()
         } else {
             blockUserButton.isHidden = true
-            messageButtonOutlet.isHidden = true
-            callButtonOutlet.isHidden = true
+            reportUserButton.isHidden = true
+            messageButtonOutlet.isEnabled = false
+            callButtonOutlet.isEnabled = false
+            self.navigationItem.rightBarButtonItems = [editButton]
         }
         
         if FUser.currentUser()!.blockedUsers.contains(user!.objectId) {

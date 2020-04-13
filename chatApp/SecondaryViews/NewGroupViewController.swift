@@ -9,7 +9,7 @@
 import UIKit
 import ProgressHUD
 
-class NewGroupViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, GroupMemberCollectionViewDelegate {
+class NewGroupViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, GroupMemberCollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     @IBOutlet weak var editAvatarButton: UIButton!
     @IBOutlet weak var groupIconImageView: UIImageView!
@@ -89,38 +89,7 @@ class NewGroupViewController: UIViewController, UICollectionViewDataSource, UICo
     }
     
     func showIconOptions() {
-        let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        let takePhotoAction = UIAlertAction(title: "Take/Choose Photo", style: .default) { (alert) in
-            print("camera")
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (alert) in
-            
-        }
-        
-        if groupIcon != nil {
-            let resetAction = UIAlertAction(title: "Reset", style: .default) { (alert) in
-                self.groupIcon = nil
-                self.groupIconImageView.image   = UIImage(named: "cameraIcon")
-                self.editAvatarButton.isHidden = true
-            }
-            optionMenu.addAction(resetAction)
-        }
-        
-        optionMenu.addAction(takePhotoAction)
-        optionMenu.addAction(cancelAction)
-        
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            if let currentPopoverpresentationcontroller = optionMenu.popoverPresentationController {
-                currentPopoverpresentationcontroller.sourceView = editAvatarButton
-                currentPopoverpresentationcontroller.sourceRect = editAvatarButton.bounds
-                
-                currentPopoverpresentationcontroller.permittedArrowDirections = .up
-                self.present(optionMenu, animated: true, completion: nil)
-            }
-        } else {
-            self.present(optionMenu, animated: true, completion: nil)
-        }
-        
+        showChooseSourceTypeAlertController()
     }
     func didClickDeleteButton(indexPath: IndexPath) {
         allMembers.remove(at: indexPath.row)
@@ -138,6 +107,32 @@ class NewGroupViewController: UIViewController, UICollectionViewDataSource, UICo
         self.navigationItem.rightBarButtonItem?.isEnabled = allMembers.count > 0
     }
     
+    func showChooseSourceTypeAlertController() {
+        let photoLibraryAction = UIAlertAction(title: "Choose a Photo", style: .default) { (action) in
+            self.showImagePickerController(sourceType: .photoLibrary)
+        }
+        let cameraAction = UIAlertAction(title: "Take a New Photo", style: .default) { (action) in
+            self.showImagePickerController(sourceType: .camera)
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        AlertService.showAlert(style: .actionSheet, title: nil, message: nil, actions: [photoLibraryAction, cameraAction, cancelAction], completion: nil)
+    }
     
+    func showImagePickerController(sourceType: UIImagePickerController.SourceType) {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.allowsEditing = true
+        imagePickerController.sourceType = sourceType
+        present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let editedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            self.groupIconImageView.image = editedImage.withRenderingMode(.alwaysOriginal)
+        } else if let originalImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            self.groupIconImageView.image = originalImage.withRenderingMode(.alwaysOriginal)
+        }
+        dismiss(animated: true, completion: nil)
+    }
 
 }

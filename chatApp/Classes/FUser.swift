@@ -212,7 +212,7 @@ class FUser {
     
     //MARK: Register functions
     
-    class func registerUserWith(email: String, password: String, firstName: String, lastName: String, avatar: String = "", completion: @escaping (_ error: Error?) -> Void ) {
+    class func registerUserWith(email: String, password: String, firstName: String, lastName: String, avatar: String = "", pushId: String, completion: @escaping (_ error: Error?) -> Void ) {
         
         Auth.auth().createUser(withEmail: email, password: password, completion: { (firuser, error) in
             
@@ -222,7 +222,7 @@ class FUser {
                 return
             }
             
-            let fUser = FUser(_objectId: firuser!.user.uid, _pushId: "", _createdAt: Date(), _updatedAt: Date(), _email: firuser!.user.email!, _firstname: firstName, _lastname: lastName, _avatar: avatar, _loginMethod: kEMAIL, _phoneNumber: "")
+            let fUser = FUser(_objectId: firuser!.user.uid, _pushId: pushId, _createdAt: Date(), _updatedAt: Date(), _email: firuser!.user.email!, _firstname: firstName, _lastname: lastName, _avatar: avatar, _loginMethod: kEMAIL, _phoneNumber: "")
             
             
             saveUserLocally(fUser: fUser)
@@ -366,6 +366,8 @@ func fetchCurrentUserFromFirestore(userId: String, completion: @escaping (_ user
         if snapshot.exists {
             
             let user = FUser(_dictionary: snapshot.data()! as NSDictionary)
+            UserDefaults.standard.setValue(snapshot.data() as! NSDictionary, forKeyPath: kCURRENTUSER)
+            UserDefaults.standard.synchronize()
             completion(user)
         } else {
             completion(nil)

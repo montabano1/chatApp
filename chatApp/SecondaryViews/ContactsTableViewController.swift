@@ -89,8 +89,10 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
         membersOfGroupChat = []
         memberIdsOfGroupChat = []
         
+        fetchCurrentUserFromFirestore(userId: FUser.currentId()) { (user) in
+            self.loadUsers()
+        }
         
-        loadUsers()
         
     }
     
@@ -371,7 +373,7 @@ class ContactsTableViewController: UITableViewController, UISearchResultsUpdatin
     }
     
     func loadUsers() {
-        ProgressHUD.show()
+        ProgressHUD.show("Loading all contacts")
         reference(.User).order(by: kFIRSTNAME, descending: false).getDocuments { (snapshot, error) in
             guard let snapshot = snapshot else {
                 ProgressHUD.dismiss()

@@ -306,7 +306,7 @@ class CreateTeamViewController: UIViewController {
                                     } else {
                                         ProgressHUD.showSuccess()
                                         UserDefaults.standard.set("Created Team Successfully!", forKey: "initialSMessage")
-                                        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
+                                        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "tabBar") as! UITabBarController
                                         
                                         let window = self.view.window
                                         window?.rootViewController = mainView

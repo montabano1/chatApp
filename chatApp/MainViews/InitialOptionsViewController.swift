@@ -85,10 +85,10 @@ class InitialOptionsViewController: UIViewController {
         }
         videoButton.isHidden = true
         videoLabel.isHidden = true
-//        broadcastButton.isHidden = true
-//        broadcastLabel.isHidden = true
-        //callButton.isHidden = true
-        //callLabel.isHidden = true
+        settingsButton.isHidden = true
+        settingsLabel.isHidden = true
+        goToChatsButton.isHidden = true
+        goToChatsLabel.isHidden = true
         
         
         modeButtons = [singleMessage, groupMessage, teamMessage, orgMessage]
@@ -184,7 +184,7 @@ class InitialOptionsViewController: UIViewController {
         callButton.addTarget(self, action: #selector(joinOrg), for: .touchUpInside)
         view.addSubview(callButton)
         callLabel.frame = CGRect(x: callButton.frame.minX, y: callButton.frame.maxY + 5, width: width/2, height: 30)
-        callLabel.text = "Org/Team \n Management"
+        callLabel.text = "Create or join \nOrg/Team"
         callLabel.numberOfLines = 2
         callLabel.textAlignment = .center
         callLabel.font = UIFont.systemFont(ofSize: 18)
@@ -261,6 +261,8 @@ class InitialOptionsViewController: UIViewController {
         self.undoButton.setTitle("< Back", for: [])
         self.undoButton.setTitleColor(#colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1), for: [])
         self.undoButton.center.y = self.optionLabel.center.y
+        
+        
     }
     
     @objc func showModes(_ sender: UIButton) {
@@ -280,7 +282,7 @@ class InitialOptionsViewController: UIViewController {
     
     func showFour() {
         
-        UIView.animate(withDuration: 1) {
+        UIView.animate(withDuration: 0.5) {
             let width = self.width
             self.optionLabel.alpha = 1
             self.optionLabel.center.x = self.titleLabel.center.x

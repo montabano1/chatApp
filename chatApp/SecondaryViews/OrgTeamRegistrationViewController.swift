@@ -360,7 +360,7 @@ class OrgTeamRegistrationViewController: UIViewController, UITextFieldDelegate {
                         ProgressHUD.showError("There was an error adding your organization to your profile")
                     } else {
                         UserDefaults.standard.set("Created Organization Successfully!", forKey: "initialSMessage")
-                        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
+                        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "tabBar") as! UITabBarController
                         
                         let window = self.view.window
                         window?.rootViewController = mainView
@@ -583,7 +583,7 @@ class OrgTeamRegistrationViewController: UIViewController, UITextFieldDelegate {
                                     print("error joining team")
                                 } else {
                                     UserDefaults.standard.set("Joined Team Successfully!", forKey: "initialSMessage")
-                                    let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
+                                    let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "tabBar") as! UITabBarController
                                     
                                     let window = self.view.window
                                     window?.rootViewController = mainView
@@ -625,7 +625,7 @@ class OrgTeamRegistrationViewController: UIViewController, UITextFieldDelegate {
                             print("error joining tea,")
                         } else {
                             UserDefaults.standard.set("Joined Team Successfully!", forKey: "initialSMessage")
-                            let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
+                            let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "tabBar") as! UITabBarController
                             let window = self.view.window
                             window?.rootViewController = mainView
                             UIView.transition(with: window!,
@@ -679,7 +679,7 @@ class OrgTeamRegistrationViewController: UIViewController, UITextFieldDelegate {
                                     print("error joining org")
                                 } else {
                                     UserDefaults.standard.set("Joined Organization Successfully!", forKey: "initialSMessage")
-                                    let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
+                                    let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "tabBar") as! UITabBarController
                                     
                                     let window = self.view.window
                                     window?.rootViewController = mainView
@@ -721,7 +721,7 @@ class OrgTeamRegistrationViewController: UIViewController, UITextFieldDelegate {
                             print("error joining org")
                         } else {
                             UserDefaults.standard.set("Joined Organization Successfully!", forKey: "initialSMessage")
-                            let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
+                            let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "tabBar") as! UITabBarController
                             let window = self.view.window
                             window?.rootViewController = mainView
                             UIView.transition(with: window!,

@@ -68,11 +68,6 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
             recent = recentChats[indexPath.row]
         }
         cell.generateCell(recentChat: recent, indexPath: indexPath)
-        if indexPath.row == 0 {
-            print()
-            print((recent[kAVATAR] as! String).prefix(4))
-            print(cell.avatarImage.image?.jpegData(compressionQuality: 0.5))
-        }
         return cell
     }
     
@@ -238,7 +233,7 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
                 let message = Encryption.decryptText(chatRoomId: text["chatroomId"] as! String, encryptedMessage: text["text"] as! String).lowercased()
                 if message.contains(searchText.lowercased()) {
-                    let tempChat = NSMutableDictionary()
+                    var tempChat = NSMutableDictionary()
                     tempChat["chatRoomID"] = text["chatroomId"]
                     tempChat["avatar"] = text["avatar"]
                     tempChat["counter"] = 0
@@ -246,15 +241,24 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     tempChat["members"] = text["receivers"]
                     tempChat["membersToPush"] = text["receivers"]
                     tempChat["recentId"] = text["messageId"]
-                    tempChat["type"] = kPRIVATE
+                    tempChat["type"] = text["type"]
                     tempChat["userId"] = FUser.currentId()
-                    for users in text["receivers"] as! [String] {
-                        if users != FUser.currentId() {
-                            tempChat["withUserFullName"] = usersNames[users]
-                            tempChat["withUserUserID"] = users
+                    if text["type"] as! String == "group" {
+                        tempChat["withUserFullName"] = text["title"]
+                    } else {
+                        for users in text["receivers"] as! [String] {
+                            if users != FUser.currentId() {
+                                tempChat["withUserFullName"] = usersNames[users]
+                                tempChat["withUserUserID"] = users
+                            }
                         }
                     }
                     tempChat["lastMessage"] = text["text"]
+                    if (text["deleters"] as! [String]).contains(FUser.currentId()) {
+                        let decrypted = "(Deleted by you) " + message
+                        let encrypted = Encryption.encryptText(chatRoomId: text["chatroomId"] as! String, message: decrypted)
+                        tempChat["lastMessage"] = encrypted
+                    }
                     filteredChats.append(tempChat)
                     popCounter += 1
                 }

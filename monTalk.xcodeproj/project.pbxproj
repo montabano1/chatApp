@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B00368C243EC4620045C42C /* ResetPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B00368B243EC4620045C42C /* ResetPasswordViewController.swift */; };
 		1B63D463242EEEE100FCD39E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1B63D462242EEEE100FCD39E /* GoogleService-Info.plist */; };
 		1B6D9556242F9BA00092B446 /* FUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD0E27B2423F2FE00DD2B5D /* FUser.swift */; };
 		1B6D95582430EBCB0092B446 /* HelperFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95572430EBCB0092B446 /* HelperFunctions.swift */; };
@@ -28,6 +29,8 @@
 		1B6D95D524392CC40092B446 /* AddContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95D424392CC40092B446 /* AddContactViewController.swift */; };
 		1B6D95DD243ABABC0092B446 /* AllOrgsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95DC243ABABC0092B446 /* AllOrgsTableViewController.swift */; };
 		1B6D95DF243AC9E30092B446 /* CreateTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D95DE243AC9E30092B446 /* CreateTeamViewController.swift */; };
+		1B71F3C5243FE9430022A828 /* ManagerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B71F3C4243FE9430022A828 /* ManagerTableViewController.swift */; };
+		1B71F3C7243FEEE70022A828 /* EditOrgTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B71F3C6243FEEE70022A828 /* EditOrgTeamViewController.swift */; };
 		1B8FF450243B75990099A94D /* CallTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8FF44F243B75990099A94D /* CallTableViewCell.swift */; };
 		1B8FF452243B763D0099A94D /* CallClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8FF451243B763D0099A94D /* CallClass.swift */; };
 		1B8FF45A243B80CD0099A94D /* CallTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8FF459243B80CD0099A94D /* CallTableViewController.swift */; };
@@ -76,6 +79,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1B00368B243EC4620045C42C /* ResetPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordViewController.swift; sourceTree = "<group>"; };
 		1B63D462242EEEE100FCD39E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1B6D95572430EBCB0092B446 /* HelperFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperFunctions.swift; sourceTree = "<group>"; };
 		1B6D9559243135DF0092B446 /* AlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertService.swift; sourceTree = "<group>"; };
@@ -100,6 +104,8 @@
 		1B6D95D424392CC40092B446 /* AddContactViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactViewController.swift; sourceTree = "<group>"; };
 		1B6D95DC243ABABC0092B446 /* AllOrgsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllOrgsTableViewController.swift; sourceTree = "<group>"; };
 		1B6D95DE243AC9E30092B446 /* CreateTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTeamViewController.swift; sourceTree = "<group>"; };
+		1B71F3C4243FE9430022A828 /* ManagerTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerTableViewController.swift; sourceTree = "<group>"; };
+		1B71F3C6243FEEE70022A828 /* EditOrgTeamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrgTeamViewController.swift; sourceTree = "<group>"; };
 		1B8FF44F243B75990099A94D /* CallTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallTableViewCell.swift; sourceTree = "<group>"; };
 		1B8FF451243B763D0099A94D /* CallClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallClass.swift; sourceTree = "<group>"; };
 		1B8FF459243B80CD0099A94D /* CallTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallTableViewController.swift; sourceTree = "<group>"; };
@@ -265,8 +271,7 @@
 			children = (
 				1BD0E25A2423DE7F00DD2B5D /* WelcomeViewController.swift */,
 				1BD0E2782423F2D200DD2B5D /* FinishRegistrationViewController.swift */,
-				1B6D95C8243832B10092B446 /* OrgTeamRegistrationViewController.swift */,
-				1B6D95842432E8FF0092B446 /* InitialOptionsViewController.swift */,
+				1B00368B243EC4620045C42C /* ResetPasswordViewController.swift */,
 			);
 			path = WelcomeViews;
 			sourceTree = "<group>";
@@ -276,7 +281,9 @@
 			children = (
 				1BD0E28124241D3500DD2B5D /* SettingsTableViewController.swift */,
 				1BD0E28A2424342C00DD2B5D /* ChatsViewController.swift */,
+				1B71F3C4243FE9430022A828 /* ManagerTableViewController.swift */,
 				1B8FF459243B80CD0099A94D /* CallTableViewController.swift */,
+				1B6D95842432E8FF0092B446 /* InitialOptionsViewController.swift */,
 			);
 			path = MainViews;
 			sourceTree = "<group>";
@@ -289,7 +296,9 @@
 				1BB532EF242C3D1F005BB386 /* MapViewController.swift */,
 				1B9FBA54242E585300AA6690 /* PicturesCollectionViewController.swift */,
 				1B6D95DC243ABABC0092B446 /* AllOrgsTableViewController.swift */,
+				1B71F3C6243FEEE70022A828 /* EditOrgTeamViewController.swift */,
 				1B6D95DE243AC9E30092B446 /* CreateTeamViewController.swift */,
+				1B6D95C8243832B10092B446 /* OrgTeamRegistrationViewController.swift */,
 				1B6D956224319AED0092B446 /* ContactsTableViewController.swift */,
 				1B6D959E2433A0D30092B446 /* NewGroupViewController.swift */,
 				1B6D95D424392CC40092B446 /* AddContactViewController.swift */,
@@ -463,6 +472,7 @@
 				1B6D959F2433A0D30092B446 /* NewGroupViewController.swift in Sources */,
 				1B8FF452243B763D0099A94D /* CallClass.swift in Sources */,
 				1BD0E25B2423DE7F00DD2B5D /* WelcomeViewController.swift in Sources */,
+				1B71F3C5243FE9430022A828 /* ManagerTableViewController.swift in Sources */,
 				1BD0E28D2424613600DD2B5D /* ProfileViewTableViewController.swift in Sources */,
 				1B6D959D24339F330092B446 /* GroupMemberCollectionViewCell.swift in Sources */,
 				1B6D955E2431833C0092B446 /* TCViewController.swift in Sources */,
@@ -480,6 +490,7 @@
 				1B6D955C243177390092B446 /* BlockedUsersViewController.swift in Sources */,
 				1BD0E28B2424342C00DD2B5D /* ChatsViewController.swift in Sources */,
 				1B9FBA55242E585300AA6690 /* PicturesCollectionViewController.swift in Sources */,
+				1B71F3C7243FEEE70022A828 /* EditOrgTeamViewController.swift in Sources */,
 				1BD0E2B0242502E400DD2B5D /* Recent.swift in Sources */,
 				1BD0E2BA2429315100DD2B5D /* OutgoingMessages.swift in Sources */,
 				1BD0E2B624290B3000DD2B5D /* ChatViewController.swift in Sources */,
@@ -489,6 +500,7 @@
 				1B8FF460243CAE9E0099A94D /* Constants.swift in Sources */,
 				1B6D95B32437AD240092B446 /* Encryption.swift in Sources */,
 				1B6D95582430EBCB0092B446 /* HelperFunctions.swift in Sources */,
+				1B00368C243EC4620045C42C /* ResetPasswordViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -645,7 +657,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.05;
+				MARKETING_VERSION = 1.06;
 				PRODUCT_BUNDLE_IDENTIFIER = michaelmontalbano.chatApp2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = montalkDev1;
@@ -673,7 +685,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.05;
+				MARKETING_VERSION = 1.06;
 				PRODUCT_BUNDLE_IDENTIFIER = michaelmontalbano.chatApp2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = montalkDev1;

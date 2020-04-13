@@ -8,12 +8,12 @@
 
 import UIKit
 import ProgressHUD
+import Firebase
 
 class WelcomeViewController: UIViewController, UITextFieldDelegate {
     
     var titleImageView = UIImageView()
     var titleLabel = UILabel()
-    var errorLabel = UILabel()
     var emailTextField = UITextField()
     var passwordTextField = UITextField()
     var confirmTextField = UITextField()
@@ -23,6 +23,7 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
     var height = 0
     var registering = false
     var loggingIn = true
+    var forgotPassword = UIButton()
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         get {
@@ -108,29 +109,31 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
         registerButton.addTarget(self, action: #selector(registerHit), for: .touchUpInside)
         view.addSubview(registerButton)
         
-        errorLabel.frame = confirmTextField.frame
-        errorLabel.text = "Incorrect username/password"
-        errorLabel.textColor = .red
-        errorLabel.sizeToFit()
-        errorLabel.center.x = view.center.x
-        errorLabel.alpha = 0
-        errorLabel.textAlignment = .center
-        view.addSubview(errorLabel)
+        forgotPassword.frame = confirmTextField.frame
+        forgotPassword.contentHorizontalAlignment = .right
+        forgotPassword.setTitle("Forgot Password", for: [])
+        forgotPassword.setTitleColor(#colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1), for: [])
+        forgotPassword.addTarget(self, action: #selector(forgotPW), for: .touchUpInside)
+        forgotPassword.isUserInteractionEnabled = true
+        view.addSubview(forgotPassword)
+    }
+    
+    @objc func forgotPW() {
+        performSegue(withIdentifier: "resetPW", sender: self)
     }
     
     @objc func endEditing() {
         self.view.endEditing(true)
-        errorLabel.alpha = 0
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
-        errorLabel.alpha = 0
         return true
     }
     
     @objc func loginHit() {
         self.view.endEditing(true)
+        forgotPassword.alpha = 1
         UIView.animate(withDuration: 0.5) {
             self.confirmTextField.isHidden = true
             self.registerButton.backgroundColor = .white
@@ -150,7 +153,7 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func registerHit() {
-        errorLabel.alpha = 0
+        forgotPassword.alpha = 0
         self.view.endEditing(true)
         UIView.animate(withDuration: 0.5) {
             self.confirmTextField.isHidden = false
@@ -179,8 +182,7 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
         
         FUser.loginUserWith(email: emailTextField.text!, password: passwordTextField.text!) { (error) in
             if error != nil {
-                self.errorLabel.alpha = 1
-                ProgressHUD.dismiss()
+                ProgressHUD.showError("Incorrect username/password")
                 return
             }
             self.goToApp()
@@ -213,11 +215,19 @@ class WelcomeViewController: UIViewController, UITextFieldDelegate {
         cleanTextFields()
         dismissKeyboard()
         
-        
-        
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: USER_DID_LOGIN_NOTIFICATION), object: nil, userInfo: [kUSERID : FUser.currentId()])
         
-        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "initialOptions") as! UINavigationController
+        fetchCurrentUserFromFirestore(userId: FUser.currentId())
+        
+        InstanceID.instanceID().instanceID { (result, error) in
+            if let error = error {
+                print("Error fetching remote instance ID: \(error)")
+            } else if let result = result {
+                reference(.User).document(FUser.currentId()).updateData([kPUSHID: result.token])
+            }
+        }
+        
+        let mainView = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(identifier: "tabBar") as! UITabBarController
         
         let window = self.view.window
         window?.rootViewController = mainView
